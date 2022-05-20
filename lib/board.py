@@ -83,7 +83,7 @@ class Board:
                 break
             if do_test and double_persons[row]:
                 ok = False
-            if do_test: 
+            if do_test:
                 print(f'  -- {double_persons[row]}')
             else:
                 print()
@@ -94,6 +94,14 @@ class Board:
             print(f'{double_pairs}')
         print(f'row={row}, col={col}{oktext}>>')
         return ok
+
+  #-----------------------------
+    @staticmethod
+    def format_meeting(lmeeting):
+        s=[f'{person:>2}' for person in lmeeting]
+        sep = ' '
+        return f'[{sep.join(s)}]'
+
   #-----------------------------
     def show(self, comment, do_test = False):
         ok = True
@@ -108,30 +116,30 @@ class Board:
             deltarow = [None]*n
             for col in range(n):
                 meeting = self.board.get((row,col))
-                lmeeting = sorted(meeting)       
-                #lmeeting = [x %n for x in lmeeting]       
+                lmeeting = sorted(meeting)
+                #lmeeting = [x %n for x in lmeeting]
                 if not lmeeting:
                     break
                 if row == 0:
                    firstrow[col]=sorted(self.board[(0,col)])
-                else:          
+                else:
                     #print(f'{row} firstrow[{col}]={firstrow[col]} {firstrow}')
-                    delta = [lmeeting[i]-firstrow[col][i] for i in range(n)]   
+                    delta = [lmeeting[i]-firstrow[col][i] for i in range(n)]
                     #deltarow[col]=tuple(sorted(delta))
                     deltarow[col]=tuple(delta)
-                print (lmeeting, end=' ')
+                print (Board.format_meeting(lmeeting), end=' ')
             if not lmeeting:
                 break
             if do_test and double_persons[row]:
                 ok = False
-            if do_test: 
+            if do_test:
                 print(f'  -- {double_persons[row]}')
             else:
                 print('')
             if False and row > 0:
                 for col in range(n):
                      print (deltarow[col], end=' ')
-                print()                
+                print()
         oktext=''
         if do_test and double_pairs:
             ok = False

@@ -8,17 +8,18 @@ from lib.helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 
 from lib.gen_meetings2 import gen_meetings
 
-BREAK_AFTER_FIRST=True
+BREAK_AFTER_FIRST=False
+
 
 #----------------------
 
 class Simu:
     #-----------------------------
-    def __init__(self,N):
+    def __init__(self, N, show_modulo=False):
         self.N = N
         self.NN = N*N
         self.free_pairs = ordered_pairs(range(1, 1 + self.NN))
-        self.board = Board(N)
+        self.board = Board(N, show_modulo)
         self.reset_all_persons_free()
         self.count_full_solutions = 0
 
@@ -168,10 +169,12 @@ class Simu:
 
 def main():
     args = sys.argv[1:] or ['3']
-    assert len(args)==1
+    argc = len(args)
+    assert argc in (1,2)
     n = int(args[0])
-    print('n=',n)
-    simu = Simu(n)
+    show_modulo = argc==2 and args[1]=='m'
+    print(f'n={n}')
+    simu = Simu(n, show_modulo)
     simu._break=False
     simu.pruefe(row=-1, col=n-1, level=0)
     print (simu.count_full_solutions)

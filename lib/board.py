@@ -2,9 +2,10 @@ from lib.helper import ordered_pairs
 from lib.helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N):
+    def __init__(self, N, show_modulo):
         self.N = N
         self.NN = N*N
+        self.show_modulo= show_modulo
         self.board={}
         self.free_pairs = ordered_pairs(range(1, 1 + self.NN))
 
@@ -117,7 +118,8 @@ class Board:
             for col in range(n):
                 meeting = self.board.get((row,col))
                 lmeeting = sorted(meeting)
-                #lmeeting = [x %n for x in lmeeting]
+                if self.show_modulo:
+                    lmeeting = [x % n for x in lmeeting]
                 if not lmeeting:
                     break
                 if row == 0:

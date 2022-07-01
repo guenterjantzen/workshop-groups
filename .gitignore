@@ -9,3 +9,6 @@ log/
 
 # Backup
 *.backup
+
+# Diverses
+material/

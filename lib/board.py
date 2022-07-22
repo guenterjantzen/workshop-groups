@@ -7,7 +7,7 @@ class Board:
         self.NN = N*N
         self.show_modulo= show_modulo
         self.board={}
-        self.free_pairs = ordered_pairs(range(1, 1 + self.NN))
+        self.free_pairs = ordered_pairs(range(self.NN))
 
     #-----------------------------
     def set_meeting(self, meeting, pair):

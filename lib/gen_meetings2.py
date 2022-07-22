@@ -37,7 +37,7 @@ def gen_meetings(row, col, n, debug=False):
     # valranges=(range(1,4), range(4,7), range(7,10))
     # valranges=((1,2,3),(4,5,6),(7,8,9))
 
-    valranges=[range(1+n*i, 1+n*(i+1))  for i in range(n)]
+    valranges=[range(n*i, n*(i+1))  for i in range(n)]
     if debug:
         print ([list(vr) for vr in valranges])
 

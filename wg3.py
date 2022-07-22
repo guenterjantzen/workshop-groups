@@ -15,7 +15,7 @@ class Simu:
     def __init__(self, N, show_modulo=False, break_after_first=True):
         self.N = N
         self.NN = N*N
-        self.free_pairs = ordered_pairs(range(1, 1 + self.NN))
+        self.free_pairs = ordered_pairs(range(self.NN))
         self.board = Board(N, show_modulo)
         self.break_after_first = break_after_first
         self.reset_all_persons_free()
@@ -23,7 +23,7 @@ class Simu:
 
     #-----------------------------
     def reset_all_persons_free(self):
-        self.free_persons = set(range(1, 1 + self.NN))
+        self.free_persons = set(range(self.NN))
 
     #-----------------------------
     def test_conditions(self, meeting, meet_pairs, pair):

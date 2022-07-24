@@ -12,11 +12,12 @@ from lib.gen_meetings2 import gen_meetings
 
 class Simu:
     #-----------------------------
-    def __init__(self, N, show_modulo=False, break_after_first=True):
+    def __init__(self, N, show_modulo=False, break_after_first=True, do_test=False):
         self.N = N
         self.NN = N*N
         self.free_pairs = ordered_pairs(range(self.NN))
         self.board = Board(N, show_modulo)
+        self.do_test = do_test
         self.break_after_first = break_after_first
         self.reset_all_persons_free()
         self.count_full_solutions = 0
@@ -127,7 +128,7 @@ class Simu:
         pair = row, col
         if row >= n:
             self.count_full_solutions +=1
-            self.board.show(pair, do_test=True)
+            self.board.show(pair, do_test=self.do_test)
             self._break=True
             return
         else:
@@ -172,8 +173,9 @@ def main():
     n = int(args[0])
     show_modulo = argc==2 and 'm' in args[1]
     break_after_first = argc==2 and 'b' in args[1]
+    do_test = argc==2 and 't' in args[1]
     print(f'n={n}')
-    simu = Simu(n, show_modulo=show_modulo, break_after_first=break_after_first)
+    simu = Simu(n, show_modulo=show_modulo, break_after_first=break_after_first, do_test=do_test)
     simu._break=False
     simu.pruefe(row=-1, col=n-1, level=0)
     print (simu.count_full_solutions)

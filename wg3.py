@@ -1,17 +1,13 @@
 #!/usr/bin/env python3
 
 import argparse
-from copy import copy, deepcopy
 
 from lib.board import Board
-
 from lib.helper import ordered_pairs
 from lib.helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
-
-from lib.gen_meetings2 import gen_meetings
+from lib.gen_meetings import gen_meetings
 
 #----------------------
-
 class Simu:
     #-----------------------------
     def __init__(self, N, show_modulo=False, break_after_first=True, do_test=False):
@@ -84,6 +80,7 @@ class Simu:
         if not self.free_persons:
             if self.free_pairs:
                 self.reset_all_persons_free()
+
     #-----------------------------
     def unset_free(self, meeting, meet_pairs, pair):
         self.free_pairs = self.free_pairs.union(meet_pairs)
@@ -93,7 +90,7 @@ class Simu:
             self.free_persons = self.free_persons.union(meeting)
         assert self.free_persons, (meeting, meet_pairs, pair)
 
-
+    #-----------------------------
     def next_row_col(self, row, col):
         #row0, col0 = row, col
         n = self.N
@@ -103,6 +100,7 @@ class Simu:
         #print (f' next {(row0, col0)} -> {(row, col)}')
         return row, col
 
+    #-----------------------------
     def prev_row_col(self, row, col):
         #row0, col0 = row, col
         n = self.N
@@ -113,6 +111,7 @@ class Simu:
             col = (col - 1) % n
         #print (f' prev {(row0, col0)} -> {(row, col)}')
         return row, col
+
     #-----------------------------
     def pruefe(self, row, col, level):
         if self.break_after_first and self._break:

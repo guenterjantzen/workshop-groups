@@ -1,55 +1,69 @@
-def pos_val_range(col, pos, n):
-    if pos == 0:
-        rng = [col]
-    else:
-        rng = list(range((pos) * n + 1, (1 + pos) * n + 1))
-    return rng
+class Counter():
+    'n Basis, m Stellenzahl'
+    def __init__(self, n, m):
+        self.n = n
+        self.m = m
+        self.a= m * [0]
 
-#-----------------------------
+    def incr(self, k=0):
+        a, n = self.a, self.n
+        a[k] = (a[k] + 1) % n
+        if a[k] == 0:
+            self.incr(k+1)
+
+    def __str__(self):
+        return ''.join(map(str, self.a[::-1]))
+
+#----------------------
+
+def gen_indexes(n, debug=False):
+    counter = Counter(n,n-1)
+    maxcounter = n**(n-1)
+    indexes=[]
+    for i in range(maxcounter):
+        index = counter.a[::-1]
+        indexes.append(index)
+
+        if debug: print(i, index)
+        if i == maxcounter-1:
+            break
+        counter.incr()
+    return indexes
+
+#----------------------
+
 def gen_meetings(row, col, n, debug=False):
-    def rg(pos):
-        return pos_val_range(col=col+1, pos=pos, n=n)
-    MIN,MAX = 0,-1
-    index=n*[0]
-    lmeeting = [rg(pos)[index[pos]] for pos in range(n)]
-    meeting =  frozenset({v for v in lmeeting if v != None})
-    if debug: print(index, lmeeting, sorted(meeting), 'first')
-    meetings=[meeting]
+    #Bsp. n=3
+    # valranges=(range(1,4), range(4,7), range(7,10))
+    # valranges=((1,2,3),(4,5,6),(7,8,9))
 
-    stop=False
-    while stop==False: #lmeeting != rng_max:
-        index[n-1]  += 1
+    valranges=[range(n*i, n*(i+1))  for i in range(n)]
+    if debug:
+        print ([list(vr) for vr in valranges])
 
-        i = n
-        while i > 1:
-            i -= 1
 
-            if index[i] == len(rg(i)):
-                index[i] = 0
-                if i-1==1 and index[i-1] == len(rg(i-1))-1:
-                    stop = True
-                    if debug: print ('stop')
-                else:
-                    index[i-1] +=1
-        if not stop:
-            lmeeting = [rg(pos)[index[pos]] for pos in range(n)]
-            meeting =  frozenset({v for v in lmeeting if v != None})
+    indexes = gen_indexes(n, debug=debug)
 
-            if debug: print(index, lmeeting, sorted(meeting))
-            meetings.append(meeting)
-            if debug: print([sorted(m) for m in meetings])
+    meetings=[]
+    for index in indexes:
+        fullindex = [col] + index
+        lmeeting = [valranges[i][fullindex[i]] for i in range(n) ]
+        if debug:
+            print (fullindex, lmeeting)
+        meeting =  frozenset(lmeeting)
+        meetings.append(meeting)
     return meetings
 
-#-----------------------------
-def test_pos_val_range(n):
-    col =1
-    for pos in range(n):
-        print( f'pos_val_range({col}, {pos}) = {pos_val_range(col, pos, n)} ' )
+#----------------------
 
 def test_gen_meetings(n, debug=True):
     row =0
     col =1
-    gen_meetings(row=row, col=col, n=n, debug=debug)
+    meetings = gen_meetings(row=row, col=col, n=n, debug=debug)
+    for i, meeting in enumerate(meetings):
+        print(i, sorted(meeting))
+
+#----------------------
 
 def main():
     args = sys.argv[1:] or ['3']
@@ -57,8 +71,7 @@ def main():
     n = int(args[0])
     print('n=',n)
 
-    #test_pos_val_range(n)
-    test_gen_meetings(n)
+    test_gen_meetings(n, debug=False)
 
 #-----------------------------
 

@@ -1,5 +1,5 @@
+import argparse
 from copy import copy, deepcopy
-import sys
 
 from lib.board import Board
 
@@ -163,19 +163,31 @@ class Simu:
         assert self.free_pairs == self.free_pairs0, (context, self.free_pairs , self.free_pairs0)
         self.restore_globals()
 
+#----------------------------
+def parseargs():
+    parser = argparse.ArgumentParser(description='List lexical sorted complete quadratic workshops with n*n persons and team size n.')
+    parser.add_argument("n", help="team size ",
+                        type=int, choices=[2, 3, 4, 5])
+    parser.add_argument("-t", "--test", help="internal validation",
+                        action="store_true")
+
+    parser.add_argument("-f", "--first", help="show only the first solution found",
+                        action="store_true")
+
+    parser.add_argument("-m", "--mod", help="show all values mod n",
+                        action="store_true")
+
+    args = parser.parse_args()
+    return args
 
 #----------------------------
 
 def main():
-    args = sys.argv[1:] or ['3']
-    argc = len(args)
-    assert argc in (1,2)
-    n = int(args[0])
-    show_modulo = argc==2 and 'm' in args[1]
-    break_after_first = argc==2 and 'b' in args[1]
-    do_test = argc==2 and 't' in args[1]
-    print(f'n={n}')
-    simu = Simu(n, show_modulo=show_modulo, break_after_first=break_after_first, do_test=do_test)
+    args = parseargs()
+    n, test, mod, first = args.n, args.test, args.mod, args.first
+
+    print(f'n={n},test={test}, mod={mod}, first={first}')
+    simu = Simu(args.n, show_modulo=args.mod, break_after_first=args.first, do_test=args.test)
     simu._break=False
     simu.pruefe(row=-1, col=n-1, level=0)
     print (simu.count_full_solutions)

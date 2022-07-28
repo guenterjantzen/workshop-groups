@@ -18,7 +18,7 @@ wird nicht angegeben. Trivial in Anführungsstrichen, aber man mache sich klar, 
 python wg3.py 3
 ```
 
-ermittelt die lexikalisch sortierten vollständigne Workshops für n=3.
+ermittelt die lexikalisch sortierten vollständigen Workshops für n=3.
 
 Aufruf von `python wg3.py`gibt eine kurze Aufrufbeschreibung, `python wg3.py -h` eine Hilfe, die die Kommandozeilenoptionen beschreibt.
 

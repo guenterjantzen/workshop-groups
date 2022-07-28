@@ -185,8 +185,6 @@ def parseargs():
 def main():
     args = parseargs()
     n, test, mod, first = args.n, args.test, args.mod, args.first
-
-    print(f'n={n},test={test}, mod={mod}, first={first}')
     simu = Simu(args.n, show_modulo=args.mod, break_after_first=args.first, do_test=args.test)
     simu._break=False
     simu.pruefe(row=-1, col=n-1, level=0)

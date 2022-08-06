@@ -14,7 +14,7 @@ class Simu:
         self.N = N
         self.NN = N*N
         self.free_pairs = ordered_pairs(range(self.NN))
-        self.board = Board(N, show_modulo)
+        self.board = Board(N, show_modulo, sym)
         self.do_test = do_test
         self.break_after_first = break_after_first
         self.reset_all_persons_free()

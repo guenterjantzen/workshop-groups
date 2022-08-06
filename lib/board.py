@@ -2,10 +2,11 @@ from lib.helper import ordered_pairs
 from lib.helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, show_modulo):
+    def __init__(self, N, show_modulo=False, sym=False):
         self.N = N
         self.NN = N*N
         self.show_modulo= show_modulo
+        self.sym = sym
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
         self.double_pairs = set()

@@ -9,6 +9,7 @@ class Board:
         self.sym = sym
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
+        self.norm_row0 = False
         self.double_pairs = set()
         self.double_persons = N*[None]
 
@@ -16,8 +17,6 @@ class Board:
     def set_meeting(self, meeting, pair):
         n = self.N
         row, col = pair
-        self.set_row = row
-        self.set_col = col
         info = f'row={row}, col={col}'
         if meeting:
             info=f'{info}, meeting={sorted(meeting)},'
@@ -25,6 +24,24 @@ class Board:
         assert 0 <= row <= n, info
         assert 0 <= col <= n, info
         self.board[(row,col)] = meeting
+        if self.sym:
+            if (row, col) == (n-1, n-1):
+                self.try_sym_order()
+
+    #-----------------------------
+    def try_sym_order(self):
+        n = self.N
+        meeting0r = self.board[(0,n-1)]
+        check0r = set([n*i+n-1 for i in range(n)])
+        if  meeting0r == check0r:
+            self.norm_row0 = True
+            meeting10 = self.board[(1,0)]
+            order = [i % n for i in sorted(meeting10)]
+            assert sorted(order) == list(range(n)), order
+            board2 = self.board.copy()
+            for row, ordered_row in enumerate(order):
+                for col in range(n):
+                    self.board[(row, col)] = board2[(ordered_row, col)]
 
     #-----------------------------
     def unset_meeting(self, pair):

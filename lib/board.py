@@ -8,6 +8,8 @@ class Board:
         self.show_modulo= show_modulo
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
+        self.double_pairs = set()
+        self.double_persons = N*[None]
 
     #-----------------------------
     def set_meeting(self, meeting, pair):
@@ -37,24 +39,24 @@ class Board:
     def test(self):
         n = self.N
         meeting_pairs = set()
-        double_pairs = set()
-        double_persons = n*[None]
+        self.double_pairs = set()
+        self.double_persons = n*[None]
         row = -1
         while row < n-1:
             row += 1
-            double_persons[row] = set()
+            self.double_persons[row] = set()
             row_persons = set()
             for col in range(n):
                 meeting = self.board.get((row,col))
                 if not meeting:
                     break
-                #double_pairs
+                #self.double_pairs
                 meet_pairs = ordered_pairs(meeting)
 
-                double_pairs = double_pairs.union(meeting_pairs.intersection(meet_pairs))
+                self.double_pairs = self.double_pairs.union(meeting_pairs.intersection(meet_pairs))
 
                 #row_double_persons
-                double_persons[row] = sorted(meeting.intersection(row_persons))
+                self.double_persons[row] = sorted(meeting.intersection(row_persons))
 
                 #assignments
                 meeting_pairs = meeting_pairs.union(meet_pairs)
@@ -62,8 +64,7 @@ class Board:
             if not meeting:
                 break
 
-        double_pairs = sorted(double_pairs)
-        return  double_persons, double_pairs
+        self.double_pairs = sorted(self.double_pairs)
 
     #-----------------------------
     @staticmethod
@@ -75,8 +76,6 @@ class Board:
     #-----------------------------
     def show(self, comment, do_test = False):
         ok = True
-        if do_test:
-            double_persons, double_pairs = self.test()
         #print (f'<< board {comment}')
         row = -1
         n = self.N
@@ -93,10 +92,10 @@ class Board:
                 print (Board.format_meeting(lmeeting), end=' ')
             if not lmeeting:
                 break
-            if do_test and double_persons[row]:
+            if do_test and self.double_persons[row]:
                 ok = False
             if do_test:
-                print(f'  -- {double_persons[row]}')
+                print(f'  -- {self.double_persons[row]}')
             else:
                 print('')
             if False and row > 0:
@@ -105,10 +104,10 @@ class Board:
                 print()
         oktext=''
         if do_test:
-            if double_pairs:
+            if self.double_pairs:
                 ok = False
                 oktext=f'ok={ok}'
-                print(f'{double_pairs}')
+                print(f'{self.double_pairs}')
             print(f'row={row}, col={col}{oktext}>>')
         print()
         return ok

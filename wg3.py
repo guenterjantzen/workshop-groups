@@ -129,6 +129,8 @@ class Simu:
         pair = row, col
         if row >= n:
             self.count_full_solutions +=1
+            if self.do_test:
+                self.board.test()
             self.board.show(pair, do_test=self.do_test)
             self._break=True
             return

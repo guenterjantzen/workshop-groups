@@ -10,7 +10,7 @@ from lib.gen_meetings import gen_meetings
 #----------------------
 class Simu:
     #-----------------------------
-    def __init__(self, N, show_modulo=False, break_after_first=True, do_test=False):
+    def __init__(self, N, show_modulo=False, break_after_first=True, sym=False, do_test=False):
         self.N = N
         self.NN = N*N
         self.free_pairs = ordered_pairs(range(self.NN))
@@ -171,14 +171,20 @@ def parseargs():
     parser = argparse.ArgumentParser(description='List lexical sorted complete quadratic workshops with n*n persons and team size n.')
     parser.add_argument("n", help="team size ",
                         type=int, choices=[2, 3, 4, 5])
-    parser.add_argument("-t", "--test", help="internal validation",
-                        action="store_true")
 
     parser.add_argument("-f", "--first", help="show only the first solution found",
                         action="store_true")
 
     parser.add_argument("-m", "--mod", help="show all values mod n",
                         action="store_true")
+
+    parser.add_argument("-s", "--sym", help="other row sort for detecting symmetries",
+                        action="store_true")
+
+
+    parser.add_argument("-t", "--test", help="internal validation",
+                        action="store_true")
+
 
     args = parser.parse_args()
     return args
@@ -187,8 +193,12 @@ def parseargs():
 
 def main():
     args = parseargs()
-    n, test, mod, first = args.n, args.test, args.mod, args.first
-    simu = Simu(args.n, show_modulo=args.mod, break_after_first=args.first, do_test=args.test)
+    n = args.n
+    test =  args.test
+    mod = args.mod
+    first = args.first
+    sym =  args.sym
+    simu = Simu(args.n, show_modulo=args.mod, break_after_first=args.first, sym=args.sym, do_test=args.test)
     simu._break=False
     simu.pruefe(row=-1, col=n-1, level=0)
     print (simu.count_full_solutions)

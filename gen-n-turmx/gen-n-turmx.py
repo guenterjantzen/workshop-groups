@@ -127,7 +127,17 @@ def main():
     453120
     534201''') 
     work([], board, comment='\n6 Standard Zykl LQ')
-
+    
+    board = Board('''
+    012345
+    120453
+    201534
+    354021
+    435102
+    543210
+    ''')     
+    work([], board, comment='\n6 S3 LQ')
+    
     board = Board('''
     0123456
     1234560

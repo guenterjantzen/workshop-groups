@@ -151,11 +151,27 @@ class Board():
                     print(f'{sort_board[i,j]:<2}', end='')
                 print()
             print()
-            
-                    
-            
-            
+#        
+#   | Spalten sortiert: 0-2 1-0 2-1 3-3
+# 0 |<0> 3  1  2
+# 1 | 2 <1> 3  0 
+# 2 | 3  0 <2> 1
+# 3 | 1  2  0 <3>
+
+#0|123 1|032 2|013 3|021    
             diagband={}
+            for i in range(self.n):                
+                v = (i+1) % self.n
+                w = sort_board[v,i]
+                print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
+                diagband[i]=[w]
+                for j in range(self.n-2):
+                    v = w
+                    w=sort_board[v,i]
+                    print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
+
+                    diagband[i].append(w)
+                print(f'diagband[{i}]: {diagband[i]}')   
             
             
             

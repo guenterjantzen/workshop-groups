@@ -17,24 +17,23 @@ class Board():
         board={}
         self.n = n = 0
         i=-1
-
         for line0 in linesplit:
-            line=line0.strip()
+            line=line0.replace(' ','').strip()
             if line:
                 i += 1
                 if not n:
                     self.n=n=len(line)
                     self.used_signs = set(range(n))
-                    #print(f'used_signs: {self.used_signs}')
+                    linedict = {c:idx for idx,c in enumerate(line)}
+                    #print(f'linedict: {linedict}')
                 else:                
                     assert n==len(line),(line,i)
-                lineset={int(x) for x in line}
-                #print (lineset)
-                assert n==len(lineset),(line,i)
+                lineset={linedict[c] for c in line}
+                linelist=[linedict[c] for c in line]
+                assert n==len(lineset),(line,lineset, i)
                 assert self.used_signs == lineset,(line,i)
-                #print(i, line)
                 for j in range(n):
-                    board[i,j] = int(line[j])
+                    board[i,j] = linelist[j]
         return board
         
     def check(self):
@@ -45,11 +44,7 @@ class Board():
         ok_towers_x = self.towers_x == self.used_signs
         ok = ok_towers_i and ok_towers_j and ok_towers_x
         
-        self.tower_info = sorted({f'{(i,j)} -> {self.board[i,j]}' for (i,j) in self.towers})
-        
-        #if ok:
-        #    print(f'check ok_towers_i= {ok_towers_i}, ok_towers_j= {ok_towers_j}, ok_towers_x= {ok_towers_x}, towers_x {self.towers_x}, tower_info {tself.tower_info}')
-   
+        self.tower_info = sorted({f'{(i,j)} -> {self.board[i,j]}' for (i,j) in self.towers})  
         return ok
     
     def setTowers(self, towers):
@@ -62,10 +57,16 @@ class Board():
         self.sorted_towers_j = sorted(self.towers_j)
         self.sorted_towers_x = sorted(self.towers_x)
     
-    def show(self):
-        #print(f' show {self.towers}')
-        print(f'show: {self.tower_info}')
-
+    def showTowers(self):
+        print(f'towers: {self.tower_info}')
+    
+    def showBoard(self, comment):
+        print(comment)
+        for i in range(self.n):
+            for j in range(self.n):
+                print(f'{self.board[i,j]:<2}', end='')
+            print()
+        
     def free_fields(self):
         free_i = self.used_signs - self.towers_i
         free_j = self.used_signs - self.towers_j
@@ -77,7 +78,8 @@ class Board():
 #------------------------------    
 def work(towers, board, comment):
     if not towers:
-        print (comment)
+        board.showBoard(comment)
+        print()
     towers0 = board.towers[:]
     board.setTowers(towers)
     assert towers == board.towers
@@ -85,7 +87,7 @@ def work(towers, board, comment):
     if len(towers)==board.n:
         check=board.check()  
         if check:
-            board.show()
+            board.showTowers()
             
     free_fields = board.free_fields()
     #print(f'free_fields: {free_fields}')
@@ -100,7 +102,7 @@ def work(towers, board, comment):
 #------------------------------
 def main():
     board = Board('0123\n1032\n2301\n3210')
-    work([], board, comment='Klein Vier')
+    work([], board, comment='Klein Vier')  
     
     board = Board('''
     01234
@@ -135,17 +137,26 @@ def main():
     354021
     435102
     543210
-    ''')     
-    work([], board, comment='\n6 S3 LQ')
+    ''')   
     
+    work([], board, comment='\n6 S3 LQ')
     board = Board('''
-    0123456
-    1234560
-    2345601
-    3456012
-    4560123
-    5601234
-    6012345
+    012345
+    120453
+    201534
+    354021
+    435102
+    543210
+    ''')   
+    
+    work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')   
+    board = Board('''
+    A B F C E D 
+    B C A D F E 
+    C D B E A F 
+    D E C F B A 
+    E F D A C B 
+    F A E B D C 
     ''') 
     work([], board, comment='\n7 Standard Zykl LQ')
     
@@ -160,6 +171,7 @@ def main():
     74563012
     ''') 
     work([], board, comment='\n8 Z2Z4 LQ')
+    
 #===========================================
 
 
@@ -169,7 +181,6 @@ def main1():
         board.setTowers(towers)   
         check=board.check()
         print(f'check: {check} {comment}')
-        #board.show()
 
     check('''
     0123

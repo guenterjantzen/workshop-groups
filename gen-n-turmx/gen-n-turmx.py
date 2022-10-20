@@ -103,7 +103,8 @@ def work(towers, board, comment):
 def main():
     board = Board('0123\n1032\n2301\n3210')
     work([], board, comment='Klein Vier')  
-    
+#=========================    
+
     board = Board('''
     01234
     12340
@@ -111,7 +112,8 @@ def main():
     34012
     40123''') 
     work([], board, comment='\n5 Standard Zykl LQ')
-
+    
+#========================= 
     board = Board('''
     012345
     123450
@@ -119,8 +121,9 @@ def main():
     345012
     450123
     501234''') 
-    work([], board, comment='\n6 Z2Z3 LQ')
- 
+    work([], board, comment='\n6 Standard Zykl LQ')
+    
+ #========================= 
     board = Board('''
     012345
     120453
@@ -128,8 +131,9 @@ def main():
     345012
     453120
     534201''') 
-    work([], board, comment='\n6 Standard Zykl LQ')
+    work([], board, comment='\n6 Z2Z3 LQ')
     
+ #=========================    
     board = Board('''
 123456
 231564
@@ -140,6 +144,7 @@ def main():
     ''')   
     work([], board, comment='\n6 S3 LQ')
     
+#=========================     
     board = Board('''
     012345
     120453
@@ -148,8 +153,9 @@ def main():
     435102
     543210
     ''')   
-    work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')   
+    work([], board, comment='\n6 unbekannt LQ')  
     
+#=========================     
     board = Board('''
     A B F C E D 
     B C A D F E 
@@ -158,19 +164,82 @@ def main():
     E F D A C B 
     F A E B D C 
     ''') 
-    work([], board, comment='\n7 Standard Zykl LQ')
+    work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')
     
+ #=========================    
     board = Board('''
-    01234567
-    12305674
-    23016745
-    30127456
-    45670123
-    56741230
-    67452301
-    74563012
+12345678
+23416785
+34127856
+41238567
+56781234
+67852341
+78563412
+85674123
     ''') 
     work([], board, comment='\n8 Z2Z4 LQ')
+    
+    board = Board('''
+12345678
+21438765
+38167452
+45276381
+54721836
+67854123
+76583214
+83612547
+    ''') 
+    work([], board, comment='\n8 Z2Z4 LQ')    
+    
+#=========================    
+    board = Board('''
+01234567
+12345670
+23456701
+34567012
+45670123
+56701234
+67012345
+70123456
+    ''') 
+    work([], board, comment='\n8 Standard Zykl LQ')
+    
+#========================= 
+    board = Board('''    
+1 2 9 3 8 4 7 5 6 
+2 3 1 4 9 5 8 6 7 
+3 4 2 5 1 6 9 7 8 
+4 5 3 6 2 7 1 8 9 
+5 6 4 7 3 8 2 9 1 
+6 7 5 8 4 9 3 1 2 
+7 8 6 9 5 1 4 2 3 
+8 9 7 1 6 2 5 3 4 
+9 1 8 2 7 3 6 4 5 
+6 5 7 4 8 3 9 2 1 
+7 6 8 5 9 4 1 3 2 
+8 7 9 6 1 5 2 4 3 
+9 8 1 7 2 6 3 5 4 
+1 9 2 8 3 7 4 6 5 
+2 1 3 9 4 8 5 7 6 
+3 2 4 1 5 9 6 8 7 
+4 3 5 2 6 1 7 9 8 
+5 4 6 3 7 2 8 1 9     
+''') 
+    work([], board, comment='\n9 https://statpages.info/latinsq.html LQ')
+    
+#=========================     
+    board = Board('''
+012345678
+123456780
+234567801
+345678012
+456780123
+567801234
+678012345
+780123456
+801234567
+    ''') 
+    work([], board, comment='\n9 Standard Zykl LQ')    
     
 #===========================================
 

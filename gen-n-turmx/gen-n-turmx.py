@@ -131,15 +131,15 @@ def main():
     work([], board, comment='\n6 Standard Zykl LQ')
     
     board = Board('''
-    012345
-    120453
-    201534
-    354021
-    435102
-    543210
+123456
+231564
+312645
+465132
+546213
+654321
     ''')   
-    
     work([], board, comment='\n6 S3 LQ')
+    
     board = Board('''
     012345
     120453
@@ -148,8 +148,8 @@ def main():
     435102
     543210
     ''')   
-    
     work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')   
+    
     board = Board('''
     A B F C E D 
     B C A D F E 

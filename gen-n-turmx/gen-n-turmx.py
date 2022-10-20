@@ -166,7 +166,19 @@ def main():
     ''') 
     work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')
     
- #=========================    
+#========================= 
+    board = Board('''
+0123456
+1234560
+2345601
+3456012
+4560123
+5601234
+6012345
+    ''') 
+    work([], board, comment='\n7 Standard Zykl LQ')
+    
+#=========================    
     board = Board('''
 12345678
 23416785
@@ -189,7 +201,7 @@ def main():
 76583214
 83612547
     ''') 
-    work([], board, comment='\n8 Z2Z4 LQ')    
+    work([], board, comment='\n8 D4 LQ')    
     
 #=========================    
     board = Board('''
@@ -241,6 +253,20 @@ def main():
     ''') 
     work([], board, comment='\n9 Standard Zykl LQ')    
     
+#=========================     
+    board = Board('''
+0123456789
+1234567890
+2345678901
+3456789012
+4567890123
+5678901234
+6789012345
+7890123456
+8901234567
+9012345678
+    ''') 
+    work([], board, comment='\n10 Standard Zykl LQ')     
 #===========================================
 
 

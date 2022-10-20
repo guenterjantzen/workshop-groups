@@ -57,7 +57,16 @@ class Board():
         self.sorted_towers_j = sorted(self.towers_j)
         self.sorted_towers_x = sorted(self.towers_x)
     
+    def showTowers(self):
+        print(f'towers: {self.tower_info}')    
+    
     def genDiagBandWorkshop(self):
+#Beispiel  
+#0 1 2 3
+#1 0 3 2
+#2 3 0 1
+#3 2 1 0    
+
 #towers: ['(0, 3) -> 3', '(1, 0) -> 1', '(2, 2) -> 0', '(3, 1) -> 2']
 #inv_towers: [(0, (2, 2)), (1, (1, 0)), (2, (3, 1)), (3, (0, 3))]
 #(0, 3) 3
@@ -65,11 +74,6 @@ class Board():
 #(2, 2) 0
 #(3, 1) 2
 
-
-#(2, 2) 0
-#(1, 0) 1
-#(3, 1) 2
-#(0, 3) 3
 
 #     0  1  2  3
 #---+-----------
@@ -92,12 +96,7 @@ class Board():
 
 #0|123 1|032 2|013 3|021
 
-
-#(0, 3) 3 0|1
-#(1, 1) 0
-#(2, 0) 2
-#(3, 2) 1
-        DEBUG = self.tower_info == ['(0, 3) -> 3', '(1, 0) -> 1', '(2, 2) -> 0', '(3, 1) -> 2']
+        DEBUG = True
         if DEBUG:
             print(f'towers: {self.tower_info}')
             
@@ -164,13 +163,13 @@ class Board():
                 v = (i+1) % self.n
                 w = sort_board[v,i]
                 print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
-                diagband[i]=[w]
+                diagband[i]=[v]
                 for j in range(self.n-2):
                     v = w
                     w=sort_board[v,i]
                     print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
 
-                    diagband[i].append(w)
+                    diagband[i].append(v)
                 print(f'diagband[{i}]: {diagband[i]}')   
             
             
@@ -214,6 +213,7 @@ def work(towers, board, comment):
     if len(towers)==board.n:
         check=board.check()  
         if check:
+            board.showTowers()
             board.genDiagBandWorkshop()
             
     free_fields = board.free_fields()
@@ -225,14 +225,11 @@ def work(towers, board, comment):
             work(towers+[(i,j)], board, comment)
         
 
-
-#------------------------------
-def main():
+def board01():  
     board = Board('0123\n1032\n2301\n3210')
-    work([], board, comment='Klein Vier')  
-    return
-#=========================    
-
+    work([], board, comment='Klein Vier') 
+    
+def board02():
     board = Board('''
     01234
     12340
@@ -241,7 +238,7 @@ def main():
     40123''') 
     work([], board, comment='\n5 Standard Zykl LQ')
     
-#========================= 
+def board03():
     board = Board('''
     012345
     123450
@@ -251,7 +248,7 @@ def main():
     501234''') 
     work([], board, comment='\n6 Standard Zykl LQ')
     
- #========================= 
+def board04():
     board = Board('''
     012345
     120453
@@ -261,7 +258,7 @@ def main():
     534201''') 
     work([], board, comment='\n6 Z2Z3 LQ')
     
- #=========================    
+def board05():
     board = Board('''
 123456
 231564
@@ -271,8 +268,8 @@ def main():
 654321
     ''')   
     work([], board, comment='\n6 S3 LQ')
-        
-#=========================     
+    
+def board06():
     board = Board('''
     A B F C E D 
     B C A D F E 
@@ -283,7 +280,7 @@ def main():
     ''') 
     work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')
     
-#========================= 
+def board07():
     board = Board('''
 0123456
 1234560
@@ -295,7 +292,7 @@ def main():
     ''') 
     work([], board, comment='\n7 Standard Zykl LQ')
     
-#=========================    
+def board08():
     board = Board('''
 12345678
 23416785
@@ -308,6 +305,7 @@ def main():
     ''') 
     work([], board, comment='\n8 Z2Z4 LQ')
     
+def board09():
     board = Board('''
 12345678
 21438765
@@ -318,9 +316,9 @@ def main():
 76583214
 83612547
     ''') 
-    work([], board, comment='\n8 D4 LQ')    
+    work([], board, comment='\n8 D4 LQ') 
     
-#=========================    
+def board10():
     board = Board('''
 01234567
 12345670
@@ -333,7 +331,7 @@ def main():
     ''') 
     work([], board, comment='\n8 Standard Zykl LQ')
     
-#========================= 
+def board11():
     board = Board('''    
 1 2 9 3 8 4 7 5 6 
 2 3 1 4 9 5 8 6 7 
@@ -354,9 +352,10 @@ def main():
 4 3 5 2 6 1 7 9 8 
 5 4 6 3 7 2 8 1 9     
 ''') 
+
     work([], board, comment='\n9 https://statpages.info/latinsq.html LQ')
     
-#=========================     
+def board12():
     board = Board('''
 012345678
 123456780
@@ -368,9 +367,9 @@ def main():
 780123456
 801234567
     ''') 
-    work([], board, comment='\n9 Standard Zykl LQ')    
+    work([], board, comment='\n9 Standard Zykl LQ')   
     
-#=========================     
+def board13():
     board = Board('''
 0123456789
 1234567890
@@ -383,10 +382,25 @@ def main():
 8901234567
 9012345678
     ''') 
-    work([], board, comment='\n10 Standard Zykl LQ')     
-#===========================================
-
-
+    work([], board, comment='\n10 Standard Zykl LQ')   
+    
+#------------------------------
+def main():
+    board01()  
+    #board02()
+    #board03()
+    #board04()
+    #board05()
+    #board06()
+    #board07()
+    #board08()
+    #board09()
+    #board10()
+    #board11()
+    #board12()
+    #board13()
+    
+#------------------------------
 def main1():
     def check(block, towers, comment):
         board = Board(block)

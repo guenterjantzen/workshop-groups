@@ -143,18 +143,7 @@ def main():
 654321
     ''')   
     work([], board, comment='\n6 S3 LQ')
-    
-#=========================     
-    board = Board('''
-    012345
-    120453
-    201534
-    354021
-    435102
-    543210
-    ''')   
-    work([], board, comment='\n6 unbekannt LQ')  
-    
+        
 #=========================     
     board = Board('''
     A B F C E D 

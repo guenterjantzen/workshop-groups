@@ -123,28 +123,34 @@ class Board():
 
             print(f'towers_i: {(towers_i)}') 
             print(f'towers_j: {(towers_j)}')
-            print(f'inv_towers_i: {sorted(inv_towers_i.items())}') 
-            print(f'inv_towers_j: {sorted(inv_towers_j.items())}')                
-            print(f'inv_towers: {sorted(inv_towers.items())}')
+            #print(f'inv_towers_i: {sorted(inv_towers_i.items())}') 
+            #print(f'inv_towers_j: {sorted(inv_towers_j.items())}')                
+            #print(f'inv_towers: {sorted(inv_towers.items())}')                      
             
-            
-            #for x,(i,j) in sorted(inv_towers.items()): 
-            #   sort_board[]
-
             self.showBoard("original") 
-            ii_jj={}
-            for x in range(self.n):
-                ii=inv_towers_i[x]
-                jj=inv_towers_j[x]
-                ii_jj[ii]=jj
-            print(f'ii_jj: {(ii_jj)}') 
+            
+            if False:                
+                ii_jj={}
+                for x in range(self.n):
+                    ii=inv_towers_i[x]
+                    jj=inv_towers_j[x]
+                    ii_jj[ii]=jj
+                print(f'ii_jj: {(ii_jj)}') 
+            
+
+                for i in range(self.n):    
+                   for j in range(self.n):
+                       jj=inv_towers_j[j]
+                       sort_board[ii_jj[i],jj]=self.board[i,j]
+                print()
             
             for i in range(self.n):    
-               for j in range(self.n):
-                   jj=inv_towers_j[j]
-                   sort_board[ii_jj[i],jj]=self.board[i,j]
+                for j in range(self.n):
+                    ti = towers_i[i]
+                    tj = towers_j[j]
+                    sort_board[ti,tj]=self.board[i,j]
             print()
-            print("zeilensortierung")       
+            print("sortierung")       
             for i in range(self.n):
                 for j in range(self.n):
                     print(f'{sort_board[i,j]:<2}', end='')
@@ -172,20 +178,6 @@ class Board():
                     diagband[i].append(v)
                 print(f'diagband[{i}]: {diagband[i]}')   
             
-            
-            
-            for x,(i,j) in sorted(inv_towers.items()): 
-
-                
-                print(x,i,j)
-                dbx=[]
-                v = x+1 % self.n
-                #w=
-                #dbx.append(
-                
-            
-        
-    
     def showBoard(self, comment):
         print(comment)
         for i in range(self.n):
@@ -214,7 +206,7 @@ def work(towers, board, comment):
         check=board.check()  
         if check:
             board.showTowers()
-            board.genDiagBandWorkshop()
+            #board.genDiagBandWorkshop()
             
     free_fields = board.free_fields()
     #print(f'free_fields: {free_fields}')
@@ -386,19 +378,19 @@ def board13():
     
 #------------------------------
 def main():
-    board01()  
-    #board02()
-    #board03()
-    #board04()
-    #board05()
-    #board06()
-    #board07()
-    #board08()
-    #board09()
-    #board10()
-    #board11()
-    #board12()
-    #board13()
+    #board01()# 4 Klein Vier  
+    board02() # 5 Standard
+    #board03()# 6
+    #board04()# 6
+    #board05()# 6
+    #board06()# 6
+    #board07()# 7
+    #board08()# 8
+    #board09()# 8
+    #board10()# 8
+    #board11()# 9
+    #board12()# 9
+    #board13()#10
     
 #------------------------------
 def main1():

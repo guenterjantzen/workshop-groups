@@ -1,7 +1,7 @@
 # Erweitertes n-Türme Problem:
 
 # Statt Schachbrett wird ein n mal n Brett mit einem lateinischen Quadrat der Ordnung n verwendet. Zeichen sind die Ziffern 0 .. n-1.
-# Zeilen und Spalten sind mit 0 .. n-1 durchnummeriert. Eine Lösung besteht aus 5 Feldern, bei denen keine Spalte oder Zeile doppelt vorkommt. 
+# Zeilen und Spalten sind mit 0 .. n-1 durchnummeriert. Eine Lösung besteht aus 5 Feldern, bei denen keine Spalte oder Zeile doppelt vorkommt.
 # (Wie n Türme im Schach, die sich nicht gegenseitig bedrohen).
 # Zusätzlich soll gelten, dass jeder Turm auf einem anders beschrifteten Feld steht
 
@@ -26,7 +26,7 @@ class Board():
                     self.used_signs = set(range(n))
                     linedict = {c:idx for idx,c in enumerate(line)}
                     #print(f'linedict: {linedict}')
-                else:                
+                else:
                     assert n==len(line),(line,i)
                 lineset={linedict[c] for c in line}
                 linelist=[linedict[c] for c in line]
@@ -35,7 +35,7 @@ class Board():
                 for j in range(n):
                     board[i,j] = linelist[j]
         return board
-        
+
     def check(self):
         ok = True
 
@@ -43,29 +43,29 @@ class Board():
         ok_towers_j = self.towers_j == self.used_signs
         ok_towers_x = self.towers_x == self.used_signs
         ok = ok_towers_i and ok_towers_j and ok_towers_x
-        
-        self.tower_info = sorted({f'{(i,j)} -> {self.board[i,j]}' for (i,j) in self.towers})  
+
+        self.tower_info = sorted({f'{(i,j)} -> {self.board[i,j]}' for (i,j) in self.towers})
         return ok
-    
+
     def setTowers(self, towers):
-        self.towers=towers                                                                         
+        self.towers=towers
         self.towers_i = {i for (i,j) in self.towers}
         self.towers_j = {j for (i,j) in self.towers}
         self.towers_x = {self.board[i,j] for (i,j) in self.towers}
-        
+
         self.sorted_towers_i = sorted(self.towers_i)
         self.sorted_towers_j = sorted(self.towers_j)
         self.sorted_towers_x = sorted(self.towers_x)
-    
+
     def showTowers(self):
-        print(f'towers: {self.tower_info}')    
-    
+        print(f'towers: {self.tower_info}')
+
     def genDiagBandWorkshop(self):
-#Beispiel  
+#Beispiel
 #0 1 2 3
 #1 0 3 2
 #2 3 0 1
-#3 2 1 0    
+#3 2 1 0
 
 #towers: ['(0, 3) -> 3', '(1, 0) -> 1', '(2, 2) -> 0', '(3, 1) -> 2']
 #inv_towers: [(0, (2, 2)), (1, (1, 0)), (2, (3, 1)), (3, (0, 3))]
@@ -77,40 +77,41 @@ class Board():
 
 #     0  1  2  3
 #---+-----------
-# 0 | 0  1  2 <3>   
+# 0 | 0  1  2 <3>
 # 1 | 1 <0> 3  2
 # 2 |<2> 3  0  1
-# 3 | 3  2 <1> 0   
+# 3 | 3  2 <1> 0
 #   |
 #   | Zeilen sortiert: 0-3 1-0 2-2 3-1
 # 0 | 1 <0> 3  2
-# 1 | 3  2 <1> 0 
+# 1 | 3  2 <1> 0
 # 2 |<2> 3  0  1
 # 3 | 0  1  2 <3>
 #   |
 #   | Spalten sortiert: 0-2 1-0 2-1 3-3
 # 0 |<0> 3  1  2
-# 1 | 2 <1> 3  0 
+# 1 | 2 <1> 3  0
 # 2 | 3  0 <2> 1
 # 3 | 1  2  0 <3>
 
 #0|123 1|032 2|013 3|021
 
         DEBUG = True
+        DEBUG2 = False
         if DEBUG:
             print(f'towers: {self.tower_info}')
-            
+
             inv_towers={}
-            
+
             towers_i={}
             towers_j={}
-            
+
             inv_towers_i={}
             inv_towers_j={}
-            
+
             sort_board={}
-            
-            for tower in self.towers:  
+
+            for tower in self.towers:
                 i,j = tower[0],tower[1]
                 x = self.board[i,j]
                 towers_i[i]=x
@@ -118,73 +119,82 @@ class Board():
                 inv_towers_i[x]=i
                 inv_towers_j[x]=j
                 inv_towers[x]=tower
-                print(tower, x)      
-                
+                print(tower, x)
 
-            print(f'towers_i: {(towers_i)}') 
+
+            print(f'towers_i: {(towers_i)}')
             print(f'towers_j: {(towers_j)}')
-            #print(f'inv_towers_i: {sorted(inv_towers_i.items())}') 
-            #print(f'inv_towers_j: {sorted(inv_towers_j.items())}')                
-            #print(f'inv_towers: {sorted(inv_towers.items())}')                      
-            
-            self.showBoard("original") 
-            
-            if False:                
+            #print(f'inv_towers_i: {sorted(inv_towers_i.items())}')
+            #print(f'inv_towers_j: {sorted(inv_towers_j.items())}')
+            #print(f'inv_towers: {sorted(inv_towers.items())}')
+
+            self.showBoard("original")
+
+            if False:
                 ii_jj={}
                 for x in range(self.n):
                     ii=inv_towers_i[x]
                     jj=inv_towers_j[x]
                     ii_jj[ii]=jj
-                print(f'ii_jj: {(ii_jj)}') 
-            
+                print(f'ii_jj: {(ii_jj)}')
 
-                for i in range(self.n):    
+
+                for i in range(self.n):
                    for j in range(self.n):
                        jj=inv_towers_j[j]
                        sort_board[ii_jj[i],jj]=self.board[i,j]
                 print()
-            
-            for i in range(self.n):    
+
+            for i in range(self.n):
                 for j in range(self.n):
                     ti = towers_i[i]
                     tj = towers_j[j]
                     sort_board[ti,tj]=self.board[i,j]
             print()
-            print("sortierung")       
+            print("sortierung")
             for i in range(self.n):
                 for j in range(self.n):
                     print(f'{sort_board[i,j]:<2}', end='')
                 print()
             print()
-#        
+#
 #   | Spalten sortiert: 0-2 1-0 2-1 3-3
 # 0 |<0> 3  1  2
-# 1 | 2 <1> 3  0 
+# 1 | 2 <1> 3  0
 # 2 | 3  0 <2> 1
 # 3 | 1  2  0 <3>
 
-#0|123 1|032 2|013 3|021    
+#0|123 1|032 2|013 3|021
             diagband={}
-            for i in range(self.n):                
+            do_print=True
+            for i in range(self.n):
                 v = (i+1) % self.n
                 w = sort_board[v,i]
-                print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
+                if DEBUG2:
+                    print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
                 diagband[i]=[v]
                 for j in range(self.n-2):
                     v = w
                     w=sort_board[v,i]
-                    print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
+                    if DEBUG2:
+                        print(f'{w} = w = sort_board[v,i] = sort_board[{v},{i}]')
 
                     diagband[i].append(v)
-                print(f'diagband[{i}]: {diagband[i]}')   
-            
+
+                anzahl = len(set(diagband[i]))
+                if anzahl != self.n-1:
+                    do_print=False
+
+                if do_print:
+                    print(f'diagband[{i}]: {diagband[i]} anzahl: {anzahl}')
+
     def showBoard(self, comment):
         print(comment)
         for i in range(self.n):
             for j in range(self.n):
                 print(f'{self.board[i,j]:<2}', end='')
             print()
-        
+
     def free_fields(self):
         free_i = self.used_signs - self.towers_i
         free_j = self.used_signs - self.towers_j
@@ -193,7 +203,7 @@ class Board():
         free_fields = [(i,j) for i in free_i for j in free_j]
         return free_fields
 
-#------------------------------    
+#------------------------------
 def work(towers, board, comment):
     if not towers:
         board.showBoard(comment)
@@ -203,11 +213,11 @@ def work(towers, board, comment):
     assert towers == board.towers
     check = False
     if len(towers)==board.n:
-        check=board.check()  
+        check=board.check()
         if check:
-            board.showTowers()
-            #board.genDiagBandWorkshop()
-            
+            #board.showTowers()
+            board.genDiagBandWorkshop()
+
     free_fields = board.free_fields()
     #print(f'free_fields: {free_fields}')
     max_sorted_towers = max(sorted(towers) or [(-1,-1)])
@@ -215,21 +225,21 @@ def work(towers, board, comment):
     for (i,j) in free_fields:
         if (i,j) > max_sorted_towers:
             work(towers+[(i,j)], board, comment)
-        
 
-def board01():  
+
+def board01():
     board = Board('0123\n1032\n2301\n3210')
-    work([], board, comment='Klein Vier') 
-    
+    work([], board, comment='Klein Vier')
+
 def board02():
     board = Board('''
     01234
     12340
     23401
     34012
-    40123''') 
+    40123''')
     work([], board, comment='\n5 Standard Zykl LQ')
-    
+
 def board03():
     board = Board('''
     012345
@@ -237,9 +247,9 @@ def board03():
     234501
     345012
     450123
-    501234''') 
+    501234''')
     work([], board, comment='\n6 Standard Zykl LQ')
-    
+
 def board04():
     board = Board('''
     012345
@@ -247,9 +257,9 @@ def board04():
     201534
     345012
     453120
-    534201''') 
+    534201''')
     work([], board, comment='\n6 Z2Z3 LQ')
-    
+
 def board05():
     board = Board('''
 123456
@@ -258,20 +268,20 @@ def board05():
 465132
 546213
 654321
-    ''')   
+    ''')
     work([], board, comment='\n6 S3 LQ')
-    
+
 def board06():
     board = Board('''
-    A B F C E D 
-    B C A D F E 
-    C D B E A F 
-    D E C F B A 
-    E F D A C B 
-    F A E B D C 
-    ''') 
+    A B F C E D
+    B C A D F E
+    C D B E A F
+    D E C F B A
+    E F D A C B
+    F A E B D C
+    ''')
     work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')
-    
+
 def board07():
     board = Board('''
 0123456
@@ -281,9 +291,9 @@ def board07():
 4560123
 5601234
 6012345
-    ''') 
+    ''')
     work([], board, comment='\n7 Standard Zykl LQ')
-    
+
 def board08():
     board = Board('''
 12345678
@@ -294,9 +304,9 @@ def board08():
 67852341
 78563412
 85674123
-    ''') 
+    ''')
     work([], board, comment='\n8 Z2Z4 LQ')
-    
+
 def board09():
     board = Board('''
 12345678
@@ -307,9 +317,9 @@ def board09():
 67854123
 76583214
 83612547
-    ''') 
-    work([], board, comment='\n8 D4 LQ') 
-    
+    ''')
+    work([], board, comment='\n8 D4 LQ')
+
 def board10():
     board = Board('''
 01234567
@@ -320,33 +330,33 @@ def board10():
 56701234
 67012345
 70123456
-    ''') 
+    ''')
     work([], board, comment='\n8 Standard Zykl LQ')
-    
+
 def board11():
-    board = Board('''    
-1 2 9 3 8 4 7 5 6 
-2 3 1 4 9 5 8 6 7 
-3 4 2 5 1 6 9 7 8 
-4 5 3 6 2 7 1 8 9 
-5 6 4 7 3 8 2 9 1 
-6 7 5 8 4 9 3 1 2 
-7 8 6 9 5 1 4 2 3 
-8 9 7 1 6 2 5 3 4 
-9 1 8 2 7 3 6 4 5 
-6 5 7 4 8 3 9 2 1 
-7 6 8 5 9 4 1 3 2 
-8 7 9 6 1 5 2 4 3 
-9 8 1 7 2 6 3 5 4 
-1 9 2 8 3 7 4 6 5 
-2 1 3 9 4 8 5 7 6 
-3 2 4 1 5 9 6 8 7 
-4 3 5 2 6 1 7 9 8 
-5 4 6 3 7 2 8 1 9     
-''') 
+    board = Board('''
+1 2 9 3 8 4 7 5 6
+2 3 1 4 9 5 8 6 7
+3 4 2 5 1 6 9 7 8
+4 5 3 6 2 7 1 8 9
+5 6 4 7 3 8 2 9 1
+6 7 5 8 4 9 3 1 2
+7 8 6 9 5 1 4 2 3
+8 9 7 1 6 2 5 3 4
+9 1 8 2 7 3 6 4 5
+6 5 7 4 8 3 9 2 1
+7 6 8 5 9 4 1 3 2
+8 7 9 6 1 5 2 4 3
+9 8 1 7 2 6 3 5 4
+1 9 2 8 3 7 4 6 5
+2 1 3 9 4 8 5 7 6
+3 2 4 1 5 9 6 8 7
+4 3 5 2 6 1 7 9 8
+5 4 6 3 7 2 8 1 9
+''')
 
     work([], board, comment='\n9 https://statpages.info/latinsq.html LQ')
-    
+
 def board12():
     board = Board('''
 012345678
@@ -358,9 +368,9 @@ def board12():
 678012345
 780123456
 801234567
-    ''') 
-    work([], board, comment='\n9 Standard Zykl LQ')   
-    
+    ''')
+    work([], board, comment='\n9 Standard Zykl LQ')
+
 def board13():
     board = Board('''
 0123456789
@@ -373,30 +383,28 @@ def board13():
 7890123456
 8901234567
 9012345678
-    ''') 
-    work([], board, comment='\n10 Standard Zykl LQ')   
-    
+    ''')
+    work([], board, comment='\n10 Standard Zykl LQ')
+
+
 #------------------------------
 def main():
-    #board01()# 4 Klein Vier  
-    board02() # 5 Standard
-    #board03()# 6
-    #board04()# 6
-    #board05()# 6
-    #board06()# 6
-    #board07()# 7
-    #board08()# 8
-    #board09()# 8
-    #board10()# 8
-    #board11()# 9
-    #board12()# 9
-    #board13()#10
-    
+    #board01()# 4 Klein Vier
+    #board02() # 5 Standard Zykl
+    #board03()# 6 Standard Zykl
+    #board07()# 7 Standard Zykl
+    board08()# 8 Z2Z4
+    board09()# 8 D4
+    #board10()# 8 Standard Zykl
+    #board11()# 9 https://statpages.info/latinsq.html
+    #board12()# 9 Standard Zykl
+
+
 #------------------------------
 def main1():
     def check(block, towers, comment):
         board = Board(block)
-        board.setTowers(towers)   
+        board.setTowers(towers)
         check=board.check()
         print(f'check: {check} {comment}')
 
@@ -406,13 +414,11 @@ def main1():
     2301
     3012
     ''', [(0,0),(1,1),(2,2),(3,3)],  'board 1')
-    
+
     check('0123\n1230\n2301\n3012', [(0,0),(1,1),(2,2),(3,3)], 'board 2')
-    
-    check('0123\n1032\n2301\n3210', [(0,0),(1,3),(2,1),(3,2)],  'board 3')    
-    
-    
+
+    check('0123\n1032\n2301\n3210', [(0,0),(1,3),(2,1),(3,2)],  'board 3')
+
+
 if __name__ == '__main__':
     main()
-        
-    

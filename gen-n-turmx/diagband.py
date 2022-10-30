@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Erweitertes n-Türme Problem:
 
 # Statt Schachbrett wird ein n mal n Brett mit einem lateinischen Quadrat der Ordnung n verwendet. Zeichen sind die Ziffern 0 .. n-1.
@@ -186,7 +188,7 @@ class Board():
                     do_print=False
 
                 if do_print:
-                    print(f'diagband[{i}]: {diagband[i]} anzahl: {anzahl}')
+                    print(f'diagband[{i}]: {diagband[i]}{diagband[i]}'.replace('[',' ').replace(']',' '))
 
     def showBoard(self, comment):
         print(comment)
@@ -227,11 +229,11 @@ def work(towers, board, comment):
             work(towers+[(i,j)], board, comment)
 
 
-def board01():
+def board_04_2():
     board = Board('0123\n1032\n2301\n3210')
     work([], board, comment='Klein Vier')
 
-def board02():
+def board_05_1():
     board = Board('''
     01234
     12340
@@ -240,7 +242,7 @@ def board02():
     40123''')
     work([], board, comment='\n5 Standard Zykl LQ')
 
-def board03():
+def board_06_1():
     board = Board('''
     012345
     123450
@@ -250,7 +252,7 @@ def board03():
     501234''')
     work([], board, comment='\n6 Standard Zykl LQ')
 
-def board04():
+def board_06_2():
     board = Board('''
     012345
     120453
@@ -260,7 +262,7 @@ def board04():
     534201''')
     work([], board, comment='\n6 Z2Z3 LQ')
 
-def board05():
+def board_06_3():
     board = Board('''
 123456
 231564
@@ -271,7 +273,7 @@ def board05():
     ''')
     work([], board, comment='\n6 S3 LQ')
 
-def board06():
+def board_06_4():
     board = Board('''
     A B F C E D
     B C A D F E
@@ -282,7 +284,7 @@ def board06():
     ''')
     work([], board, comment='\n6 https://statpages.info/latinsq.html LQ')
 
-def board07():
+def board_07_1():
     board = Board('''
 0123456
 1234560
@@ -294,7 +296,7 @@ def board07():
     ''')
     work([], board, comment='\n7 Standard Zykl LQ')
 
-def board08():
+def board_08_1():
     board = Board('''
 12345678
 23416785
@@ -307,7 +309,7 @@ def board08():
     ''')
     work([], board, comment='\n8 Z2Z4 LQ')
 
-def board09():
+def board_08_2():
     board = Board('''
 12345678
 21438765
@@ -320,7 +322,7 @@ def board09():
     ''')
     work([], board, comment='\n8 D4 LQ')
 
-def board10():
+def board_08_3():
     board = Board('''
 01234567
 12345670
@@ -333,7 +335,21 @@ def board10():
     ''')
     work([], board, comment='\n8 Standard Zykl LQ')
 
-def board11():
+def board_08_4():
+    board = Board('''
+01234567
+10325476
+23016745
+32107654
+45670123
+54761032
+67452301
+76543210
+    ''')
+    work([], board, comment='\n8 GF(2^3,+) LQ')
+
+
+def board_09_1():
     board = Board('''
 1 2 9 3 8 4 7 5 6
 2 3 1 4 9 5 8 6 7
@@ -357,7 +373,7 @@ def board11():
 
     work([], board, comment='\n9 https://statpages.info/latinsq.html LQ')
 
-def board12():
+def board_09_2():
     board = Board('''
 012345678
 123456780
@@ -371,7 +387,7 @@ def board12():
     ''')
     work([], board, comment='\n9 Standard Zykl LQ')
 
-def board13():
+def board_10_1():
     board = Board('''
 0123456789
 1234567890
@@ -389,15 +405,16 @@ def board13():
 
 #------------------------------
 def main():
-    #board01()# 4 Klein Vier
-    #board02() # 5 Standard Zykl
-    #board03()# 6 Standard Zykl
-    #board07()# 7 Standard Zykl
-    board08()# 8 Z2Z4
-    board09()# 8 D4
-    #board10()# 8 Standard Zykl
-    #board11()# 9 https://statpages.info/latinsq.html
-    #board12()# 9 Standard Zykl
+    #board_04_2()# 4 Klein Vier
+    #board_05_1() # 5 Standard Zykl
+    #board_06_1()# 6 Standard Zykl
+    #board_06_1()# 7 Standard Zykl
+    #board_08_1()# 8 Z2Z4
+    #board_08_2()# 8 D4
+    #board_08_3()# 8 Standard Zykl
+    board_08_4()# 8 GF(2^3, +)
+    #board_09_1()# 9 https://statpages.info/latinsq.html
+    #board_09_2()# 9 Standard Zykl
 
 
 #------------------------------

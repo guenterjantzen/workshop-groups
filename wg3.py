@@ -135,13 +135,15 @@ class Simu:
 
         pair = row, col
         if row >= n:
-            if self.break_after_first or self.board.is_row0_changed() == True:
+            if self.board.is_row0_changed() == True:
                 self._break=True
             else:
                 self.count_full_solutions +=1
                 if self.do_test:
                     self.board.test()
                 self.board.show(pair, do_test=self.do_test)
+                if self.break_after_first:
+                    self._break=True
             return
         else:
             for meeting in gen_meetings(row=row, col=col, n=n):

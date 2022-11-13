@@ -2,21 +2,33 @@ from lib.helper import ordered_pairs
 from lib.helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, show_modulo):
+    def __init__(self, N, show_modulo=False, sym=False):
         self.N = N
         self.NN = N*N
         self.show_modulo= show_modulo
+        self.sym = sym
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
+        self.norm_row0 = False
         self.double_pairs = set()
         self.double_persons = N*[None]
+        self.init_standard_row0()
+        
+    #-----------------------------
+    def init_standard_row0(self):
+        #[frozenset({0, 3, 6}), frozenset({1, 4, 7}), frozenset({8, 2, 5})]
+        n = self.N
+        self.standard_row0=[]
+        for i in range(n):
+            meeting=set()
+            for j in range(n):
+                meeting.add(i+j*n)
+            self.standard_row0.append(frozenset(meeting))
 
     #-----------------------------
     def set_meeting(self, meeting, pair):
         n = self.N
         row, col = pair
-        self.set_row = row
-        self.set_col = col
         info = f'row={row}, col={col}'
         if meeting:
             info=f'{info}, meeting={sorted(meeting)},'
@@ -24,6 +36,46 @@ class Board:
         assert 0 <= row <= n, info
         assert 0 <= col <= n, info
         self.board[(row,col)] = meeting
+        if self.sym:
+            if (row, col) == (n-1, n-1):
+                self.try_sym_order()
+                
+   #----------------------------- 
+    def get_row0(self):
+        n = self.N
+        row={}
+        is_full_row=True
+        for col in range(n):
+            if not (0, col) in self.board:
+                is_full_row = False
+        if is_full_row:
+            row = [self.board[(0,i)] for i in range(n)]
+        return row
+
+    #-----------------------------            
+    def is_row0_changed(self):
+        n = self.N             
+        row0 = self.get_row0()
+        ret = None
+        if len(row0) == n:
+            ret = row0 != self.standard_row0
+        #print(ret, row0)
+        return ret
+        
+    #-----------------------------
+    def try_sym_order(self):
+        n = self.N
+        meeting0r = self.board[(0,n-1)]
+        check0r = set([n*i+n-1 for i in range(n)])
+        if  meeting0r == check0r:
+            self.norm_row0 = True
+            meeting10 = self.board[(1,0)]
+            order = [i % n for i in sorted(meeting10)]
+            assert sorted(order) == list(range(n)), order
+            board2 = self.board.copy()
+            for row, ordered_row in enumerate(order):
+                for col in range(n):
+                    self.board[(row, col)] = board2[(ordered_row, col)]
 
     #-----------------------------
     def unset_meeting(self, pair):

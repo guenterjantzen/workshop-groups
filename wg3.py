@@ -113,15 +113,9 @@ class Simu:
         #print (f' prev {(row0, col0)} -> {(row, col)}')
         return row, col
 
-    def is_abbruch(self):
-        abbruch = self._break
-        #abbruch = (self.break_after_first and self._break)
-        #abbruch = abbruch or self.board.is_row0_changed() == True
-        return abbruch
-
     #-----------------------------
     def pruefe(self, row, col, level):
-        if self.is_abbruch():
+        if self._break:
             return
         n = self.N
         indent=level*4*' '

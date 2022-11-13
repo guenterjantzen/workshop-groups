@@ -118,7 +118,7 @@ class Simu:
         #abbruch = (self.break_after_first and self._break)
         #abbruch = abbruch or self.board.is_row0_changed() == True
         return abbruch
-        
+
     #-----------------------------
     def pruefe(self, row, col, level):
         if self.is_abbruch():
@@ -135,12 +135,13 @@ class Simu:
 
         pair = row, col
         if row >= n:
-            self.count_full_solutions +=1
-            if self.do_test:
-                self.board.test()
-            self.board.show(pair, do_test=self.do_test)
-            if self.break_after_first:# or self.board.is_row0_changed() == True:
+            if self.break_after_first or self.board.is_row0_changed() == True:
                 self._break=True
+            else:
+                self.count_full_solutions +=1
+                if self.do_test:
+                    self.board.test()
+                self.board.show(pair, do_test=self.do_test)
             return
         else:
             for meeting in gen_meetings(row=row, col=col, n=n):

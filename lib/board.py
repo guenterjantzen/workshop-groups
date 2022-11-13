@@ -58,7 +58,8 @@ class Board:
         row0 = self.get_row0()
         ret = None
         if len(row0) == n:
-            ret = row0 == self.standard_row0
+            ret = row0 != self.standard_row0
+        #print(ret, row0)
         return ret
         
     #-----------------------------

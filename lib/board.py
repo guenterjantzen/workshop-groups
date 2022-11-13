@@ -12,6 +12,18 @@ class Board:
         self.norm_row0 = False
         self.double_pairs = set()
         self.double_persons = N*[None]
+        self.init_standard_row0()
+        
+    #-----------------------------
+    def init_standard_row0(self):
+        #[frozenset({0, 3, 6}), frozenset({1, 4, 7}), frozenset({8, 2, 5})]
+        n = self.N
+        self.standard_row0=[]
+        for i in range(n):
+            meeting=set()
+            for j in range(n):
+                meeting.add(i+j*n)
+            self.standard_row0.append(frozenset(meeting))
 
     #-----------------------------
     def set_meeting(self, meeting, pair):
@@ -27,7 +39,28 @@ class Board:
         if self.sym:
             if (row, col) == (n-1, n-1):
                 self.try_sym_order()
+                
+   #----------------------------- 
+    def get_row0(self):
+        n = self.N
+        row={}
+        is_full_row=True
+        for col in range(n):
+            if not (0, col) in self.board:
+                is_full_row = False
+        if is_full_row:
+            row = [self.board[(0,i)] for i in range(n)]
+        return row
 
+    #-----------------------------            
+    def is_row0_changed(self):
+        n = self.N             
+        row0 = self.get_row0()
+        ret = None
+        if len(row0) == n:
+            ret = row0 == self.standard_row0
+        return ret
+        
     #-----------------------------
     def try_sym_order(self):
         n = self.N

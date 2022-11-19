@@ -37,44 +37,25 @@ def work(basis, power, irr_poly, representation):
         elToBin[str(el)]=b
         BinToEl[b]=el
 
-    print()
-    print (info, '+')
-    for el1 in els:
-        for el2 in els:
-            el = el1+el2
-            b=elToBin[str(el)]
-            print (b, end=' ')
+    table={}
+    for h, el_h in enumerate(els):#block
+        for i, el_i in enumerate(els):   #zeile
+            for j, el_j in enumerate(els): #spalte
+                if (h,i,j) not in table:
+                    el = el_j*el_i + el_h
+                    b=elToBin[str(el)]
+                    table[(h,i,j)] = b
+
+    print (f'\nWorkshop {info} ')
+
+    n = len(els)
+    for i in range(n):
+        for h in range(n):
+            for j in range(n):
+                b = table[(h,i,j)]
+                print(b, end=' ')
+            print(' | ', end='')
         print()
-    print()
-    print (info, '*')
-    for el1 in els:
-        for el2 in els:
-            el = el1*el2
-            b=elToBin[str(el)]
-            print (b, end=' ')
-        print()
-
-    print("------------------")
-
-    for el_h in els:
-        print (f'{info} * {elToBin[str(el_h)]}')
-        for el_i in els:
-            for el_j in els:
-                el = el_h*el_i + el_j
-                b=elToBin[str(el)]
-                print (b, end=' ')
-            print()
-
-    print("---Worksho-----------")
-
-    for el_h in els:
-        print (f'{info} * {elToBin[str(el_h)]} WS')
-        for el_i in els:
-            for el_j in els:
-                el = el_j*el_i + el_h
-                b=elToBin[str(el)]
-                print (b, end=' ')
-            print()
 
 
 def parseargs():

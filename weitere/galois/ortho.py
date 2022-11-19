@@ -54,6 +54,28 @@ def work(basis, power, irr_poly, representation):
             print (b, end=' ')
         print()
 
+    print("------------------")
+
+    for el_h in els:
+        print (f'{info} * {elToBin[str(el_h)]}')
+        for el_i in els:
+            for el_j in els:
+                el = el_h*el_i + el_j
+                b=elToBin[str(el)]
+                print (b, end=' ')
+            print()
+
+    print("---Worksho-----------")
+
+    for el_h in els:
+        print (f'{info} * {elToBin[str(el_h)]} WS')
+        for el_i in els:
+            for el_j in els:
+                el = el_j*el_i + el_h
+                b=elToBin[str(el)]
+                print (b, end=' ')
+            print()
+
 
 def parseargs():
     parser = argparse.ArgumentParser(description='GF Tables ')
@@ -69,16 +91,13 @@ def parseargs():
 def main():
     sample="""
 Beispiele:
-    gf.py 2 2 101 b
     gf.py 2 2 111 b
 
     gf.py 2 3 1101 b  #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
     gf.py 2 3 1011 b
 
-    gf.py 3 2 101 b
     gf.py 3 2 112 b
     gf.py 3 2 122 b
-
     """
     print(sample)
 

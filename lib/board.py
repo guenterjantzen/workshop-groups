@@ -13,7 +13,7 @@ class Board:
         self.double_pairs = set()
         self.double_persons = N*[None]
         self.init_standard_row0()
-        
+
     #-----------------------------
     def init_standard_row0(self):
         #[frozenset({0, 3, 6}), frozenset({1, 4, 7}), frozenset({8, 2, 5})]
@@ -35,12 +35,18 @@ class Board:
         if DEBUG5: print(f'Board.set_meeting  {info}')
         assert 0 <= row <= n, info
         assert 0 <= col <= n, info
+
+        #Mindestens zwei Runden, also mit Einheitsrund drei
+        if n == 6  and row > 2 and col == 0:
+            self.show(pair, True)
+
         self.board[(row,col)] = meeting
         if self.sym:
             if (row, col) == (n-1, n-1):
                 self.try_sym_order()
-                
-   #----------------------------- 
+
+
+   #-----------------------------
     def get_row0(self):
         n = self.N
         row={}
@@ -52,16 +58,16 @@ class Board:
             row = [self.board[(0,i)] for i in range(n)]
         return row
 
-    #-----------------------------            
+    #-----------------------------
     def is_row0_changed(self):
-        n = self.N             
+        n = self.N
         row0 = self.get_row0()
         ret = None
         if len(row0) == n:
             ret = row0 != self.standard_row0
         #print(ret, row0)
         return ret
-        
+
     #-----------------------------
     def try_sym_order(self):
         n = self.N
@@ -128,7 +134,8 @@ class Board:
     #-----------------------------
     def show(self, comment, do_test = False):
         ok = True
-        #print (f'<< board {comment}')
+        if do_test:
+            print (f'<< board {comment}')
         row = -1
         n = self.N
         while row < n-1:
@@ -136,13 +143,17 @@ class Board:
             deltarow = [None]*n
             for col in range(n):
                 meeting = self.board.get((row,col))
+                if not meeting:
+                    break
                 lmeeting = sorted(meeting)
                 if self.show_modulo:
                     lmeeting = [x % n for x in lmeeting]
-                if not lmeeting:
-                    break
+                #if not lmeeting:
+                #    break
                 print (Board.format_meeting(lmeeting), end=' ')
-            if not lmeeting:
+            #if not lmeeting:
+            #    break
+            if not meeting:
                 break
             if do_test and self.double_persons[row]:
                 ok = False

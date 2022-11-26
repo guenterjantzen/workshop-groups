@@ -135,7 +135,7 @@ class Simu:
                 self.count_full_solutions +=1
                 if self.do_test:
                     self.board.test()
-                self.board.show(pair, do_test=self.do_test)
+                self.board.show(str(pair)+" dontshow", do_test=self.do_test)
                 if self.break_after_first:
                     self._break=True
             return
@@ -175,7 +175,7 @@ class Simu:
 def parseargs():
     parser = argparse.ArgumentParser(description='List lexical sorted complete quadratic workshops with n*n persons and team size n.')
     parser.add_argument("n", help="team size ",
-                        type=int, choices=[2, 3, 4, 5])
+                        type=int, choices=[2, 3, 4, 5, 6])
 
     parser.add_argument("-f", "--first", help="show only the first solution found",
                         action="store_true")
@@ -186,10 +186,8 @@ def parseargs():
     parser.add_argument("-s", "--sym", help="other row sort for detecting symmetries",
                         action="store_true")
 
-
     parser.add_argument("-t", "--test", help="internal validation",
                         action="store_true")
-
 
     args = parser.parse_args()
     return args

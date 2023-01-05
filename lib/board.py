@@ -2,10 +2,11 @@ from lib.helper import ordered_pairs
 from lib.helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, show_modulo=False, sym=False):
+    def __init__(self, N, show_modulo=False, ortho=False, sym=False):
         self.N = N
         self.NN = N*N
         self.show_modulo= show_modulo
+        self.ortho=ortho
         self.sym = sym
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
@@ -44,7 +45,6 @@ class Board:
         if self.sym:
             if (row, col) == (n-1, n-1):
                 self.try_sym_order()
-
 
    #-----------------------------
     def get_row0(self):
@@ -133,6 +133,8 @@ class Board:
 
     #-----------------------------
     def show(self, comment, do_test = False):
+        ortho = self.ortho
+        assert not ortho, "ortho not supported yet"
         ok = True
         if do_test:
             print (f'<< board {comment}')

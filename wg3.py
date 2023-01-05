@@ -10,11 +10,11 @@ from lib.gen_meetings import gen_meetings
 #----------------------
 class Simu:
     #-----------------------------
-    def __init__(self, N, show_modulo=False, break_after_first=True, sym=False, do_test=False):
+    def __init__(self, N, show_modulo=False, break_after_first=True, sym=False, ortho=False, do_test=False):
         self.N = N
         self.NN = N*N
         self.free_pairs = ordered_pairs(range(self.NN))
-        self.board = Board(N, show_modulo, sym)
+        self.board = Board(N, show_modulo, ortho, sym)
         self.do_test = do_test
         self.break_after_first = break_after_first
         self.reset_all_persons_free()
@@ -186,6 +186,10 @@ def parseargs():
     parser.add_argument("-s", "--sym", help="other row sort for detecting symmetries",
                         action="store_true")
 
+    parser.add_argument("-o", "--ortho", help="show orthogonal squares instead of workshop",
+                        action="store_true")
+
+
     parser.add_argument("-t", "--test", help="internal validation",
                         action="store_true")
 
@@ -201,7 +205,7 @@ def main():
     mod = args.mod
     first = args.first
     sym =  args.sym
-    simu = Simu(args.n, show_modulo=args.mod, break_after_first=args.first, sym=args.sym, do_test=args.test)
+    simu = Simu(args.n, show_modulo=args.mod, break_after_first=args.first, sym=args.sym, ortho=args.ortho, do_test=args.test)
     simu._break=False
     simu.pruefe(row=-1, col=n-1, level=0)
     print (simu.count_full_solutions)

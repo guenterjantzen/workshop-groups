@@ -131,16 +131,19 @@ class Board:
         sep = ' '
         return f'[{sep.join(s)}]'
 
+
     #-----------------------------
     def show(self, comment, do_test = False):
+        lines=[]
         ortho = self.ortho
-        assert not ortho, "ortho not supported yet"
         ok = True
         if do_test:
-            print (f'<< board {comment}')
+            lines.append(f'<< board {comment}')
         row = -1
         n = self.N
         while row < n-1:
+            linemeetings=[]
+            linecomments=[]
             row+=1
             deltarow = [None]*n
             for col in range(n):
@@ -152,7 +155,8 @@ class Board:
                     lmeeting = [x % n for x in lmeeting]
                 #if not lmeeting:
                 #    break
-                print (Board.format_meeting(lmeeting), end=' ')
+                linemeetings.append(lmeeting)
+
             #if not lmeeting:
             #    break
             if not meeting:
@@ -160,19 +164,37 @@ class Board:
             if do_test and self.double_persons[row]:
                 ok = False
             if do_test:
-                print(f'  -- {self.double_persons[row]}')
+                linecomments.append(f'  -- {self.double_persons[row]}')
             else:
-                print('')
+                linecomments.append('')
             if False and row > 0:
                 for col in range(n):
                      print (deltarow[col], end=' ')
                 print()
+
+            if ortho:
+                orthomeetings=[]
+                for orow in range(n):
+                    orthomeetings.append([])
+                    for ocol in range(n):
+                        orthomeetings[orow].append(linemeetings[ocol][orow])
+                linemeetings = orthomeetings
+
+            linetokens = [Board.format_meeting(lmeeting) for lmeeting in linemeetings]
+            line = f'{" ".join(linetokens)}'
+            comment = f'{" ".join(linecomments)}'
+            lines.append(f'{line} {comment}')
+
         oktext=''
         if do_test:
             if self.double_pairs:
                 ok = False
                 oktext=f'ok={ok}'
-                print(f'{self.double_pairs}')
-            print(f'row={row}, col={col}{oktext}>>')
+                lines.append(f'{self.double_pairs}')
+            lines.append(f'row={row}, col={col}{oktext}>>')
+
+        for line in lines:
+            print(line)
         print()
+
         return ok

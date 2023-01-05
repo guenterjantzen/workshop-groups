@@ -172,10 +172,10 @@ class Simu:
         self.restore_globals()
 
 #----------------------------
-def parseargs():
+def parseargs(choices):
     parser = argparse.ArgumentParser(description='List lexical sorted complete quadratic workshops with n*n persons and team size n.')
     parser.add_argument("n", help="team size ",
-                        type=int, choices=[2, 3, 4, 5, 6])
+                        type=int, choices=choices)
 
     parser.add_argument("-f", "--first", help="show only the first solution found",
                         action="store_true")
@@ -199,7 +199,8 @@ def parseargs():
 #----------------------------
 
 def main():
-    args = parseargs()
+    CHOICES=[2, 3, 4, 5, 6]
+    args = parseargs(CHOICES)
     n = args.n
     test =  args.test
     mod = args.mod

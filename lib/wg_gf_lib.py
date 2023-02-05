@@ -6,7 +6,7 @@
 import argparse
 import os.path
 from galois_field import GFpn
-
+from .board import Board
 class SimuGF:
     def work(self, basis, power, irr_poly, representation, show_ops=False):
         gf = GFpn(basis, irr_poly)
@@ -16,7 +16,7 @@ class SimuGF:
         if show_ops:
             self.show = self.show_optables
         else:
-            self.show = self.show_workshop
+            self.show = self.show_workshop2
 
         elToBin={}
         BinToEl={}
@@ -65,6 +65,35 @@ class SimuGF:
                     print(b, end=' ')
                 print(' | ', end='')
             print()
+
+
+
+    def show_workshop2(self, els, elToBin):
+        table={}
+        for h, el_h in enumerate(els):#block
+            for i, el_i in enumerate(els):   #zeile
+                for j, el_j in enumerate(els): #spalte
+                    if (h,i,j) not in table:
+                        el = el_j*el_i + el_h
+                        b=elToBin[str(el)]
+                        table[(h,i,j)] = b
+
+        print (f'\nWorkshop2 {self.info} ')
+
+        n = len(els)
+        board = Board(N=n,show_modulo=True)
+
+        for row in range(n):
+            for col in range(n):
+                pair = (row,col)
+                meeting=[]
+                for j in range(n):
+                    b = table[(col,row,j)]
+                    b = j * n + int(b)
+                    meeting.append(b)
+                board.set_meeting(meeting, pair)
+        board.show(comment=';)', do_test=True)
+
 
     def show_optables(self, els, elToBin):
         print (f'\nWorkshop {self.info} +')

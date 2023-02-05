@@ -8,14 +8,16 @@ import os.path
 from galois_field import GFpn
 from .board import Board
 class SimuGF:
-    def work(self, basis, power, irr_poly, representation, show_ops=False):
+    def work(self, basis, power, irr_poly, representation, show='w'):
         gf = GFpn(basis, irr_poly)
 
         self.info = f'GF({basis}^{power}), {irr_poly}'
 
-        if show_ops:
+        if show=='o':
             self.show = self.show_optables
-        else:
+        elif show=='w':
+            self.show = self.show_workshop
+        elif show=='w2':
             self.show = self.show_workshop2
 
         elToBin={}
@@ -110,17 +112,6 @@ class SimuGF:
                 b=elToBin[str(el)]
                 print (b, end=' ')
             print()
-
-
-def parseargs():
-    parser = argparse.ArgumentParser(description='GF Tables ')
-    parser.add_argument("p", help="basis (prim)")
-    parser.add_argument("n", help="power")
-    parser.add_argument("i", help="irr poly")
-    parser.add_argument("r", help="Darstellung 'b' oder 'i' binaer/index)")
-    parser.add_argument("-O", "--ops", help="show optables",action="store_true")
-    args = parser.parse_args()
-    return args
 
 #----------------------------
 

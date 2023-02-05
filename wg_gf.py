@@ -15,7 +15,7 @@ def parseargs():
     parser.add_argument("n", help="power")
     parser.add_argument("i", help="irr poly")
     parser.add_argument("r", help="Darstellung 'b' oder 'i' binaer/index)")
-    parser.add_argument("-O", "--ops", help="show optables",action="store_true")
+    parser.add_argument("s", help="Darstellung 'w','o','w2'  wg/optables/test)")
     args = parser.parse_args()
     return args
 
@@ -25,27 +25,27 @@ def main():
     scriptname = os.path.basename(__file__)
     sample=f"""
 Beispiele:
-    {scriptname} 2 2 111 b
+    {scriptname} 2 2 111 b w
 
-    {scriptname} 2 3 1101 b  #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
-    {scriptname} 2 3 1011 b
+    {scriptname} 2 3 1101 b w #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
+    {scriptname} 2 3 1011 b w
 
-    {scriptname} 3 2 112 b
-    {scriptname} 3 2 122 b
+    {scriptname} 3 2 112 b w
+    {scriptname} 3 2 122 b w
     """
     print(sample)
 
     args = parseargs()
     print(args)
 
-    p,n,i,r,show_ops = args.p, args.n, args.i, args.r, args.ops
+    p,n,i,r,show = args.p, args.n, args.i, args.r, args.s
 
     basis=int(p)
     power=int(n)
     irr_poly=[int(c) for c in i]
     representation = args.r
     simu = SimuGF()
-    simu.work(basis, power, irr_poly, representation, show_ops)
+    simu.work(basis, power, irr_poly, representation, show)
 
 
 def demo():

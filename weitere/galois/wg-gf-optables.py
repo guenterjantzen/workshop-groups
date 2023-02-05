@@ -4,7 +4,7 @@
 #pip install git+https://github.com/syakoo/galois-field
 
 import argparse
-
+import os.path
 from galois_field import GFpn
 
 def work(basis, power, irr_poly, representation):
@@ -67,16 +67,19 @@ def parseargs():
 #----------------------------
 
 def main():
-    sample="""
+    scriptname = os.path.basename(__file__)
+
+    sample=f"""
 Beispiele:
-    gf.py 2 2 111 b
+    {scriptname} 2 2 111 b
 
-    gf.py 2 3 1101 b  #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
-    gf.py 2 3 1011 b
+    {scriptname} 2 3 1101 b  #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
+    {scriptname} 2 3 1011 b
 
-    gf.py 3 2 112 b
-    gf.py 3 2 122 b
+    {scriptname} 3 2 112 b
+    {scriptname} 3 2 122 b
     """
+
     print(sample)
 
     args = parseargs()
@@ -116,4 +119,5 @@ def demo():
 
 
 if __name__ == '__main__':
+    print(__file__)
     main()

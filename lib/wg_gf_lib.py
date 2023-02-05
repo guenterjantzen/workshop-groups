@@ -95,33 +95,6 @@ def parseargs():
 
 #----------------------------
 
-def main():
-    scriptname = os.path.basename(__file__)
-    sample=f"""
-Beispiele:
-    {scriptname} 2 2 111 b
-
-    {scriptname} 2 3 1101 b  #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
-    {scriptname} 2 3 1011 b
-
-    {scriptname} 3 2 112 b
-    {scriptname} 3 2 122 b
-    """
-    print(sample)
-
-    args = parseargs()
-    print(args)
-
-    p,n,i,r,show_ops = args.p, args.n, args.i, args.r, args.ops
-
-    basis=int(p)
-    power=int(n)
-    irr_poly=[int(c) for c in i]
-    representation = args.r
-    simu = SimuGF()
-    simu.work(basis, power, irr_poly, representation, show_ops)
-
-
 def demo():
     simu = SimuGF()
     representation='n'
@@ -150,5 +123,4 @@ def demo():
 
 
 if __name__ == '__main__':
-    main()
-    #demo()
+    demo()

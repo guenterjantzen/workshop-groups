@@ -1,5 +1,5 @@
-from lib.helper import ordered_pairs
-from lib.helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
+from .helper import ordered_pairs
+from .helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
     def __init__(self, N, show_modulo=False, ortho=False, sym=False):

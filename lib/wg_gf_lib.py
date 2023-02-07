@@ -8,7 +8,7 @@ import os.path
 from galois_field import GFpn
 from .board import Board
 class SimuGF:
-    def work(self, basis, power, irr_poly, representation, show='w'):
+    def work(self, basis, power, irr_poly, representation, show='w', verbose=False):
         gf = GFpn(basis, irr_poly)
 
         self.info = f'GF({basis}^{power}), {irr_poly}'
@@ -45,6 +45,10 @@ class SimuGF:
             #print (i,b)
             elToBin[str(el)]=b
             BinToEl[b]=el
+
+        if verbose:
+            for i,(b,el) in enumerate(sorted(BinToEl.items())):
+                print('-- ', i,b, str(el))
         self.show(els, elToBin)
 
     def show_workshop(self, els, elToBin):

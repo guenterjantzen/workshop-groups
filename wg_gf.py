@@ -35,8 +35,8 @@ def parseargs():
     parser.add_argument("p", help="basis (prim)")
     parser.add_argument("n", help="power")
     parser.add_argument("i", help="irr poly")
-    parser.add_argument("r", help="Darstellung 'b' oder 'i' binaer/index)")
-    parser.add_argument("s", help="Darstellung 'w','o','w2'  wg/optables/test)")
+    parser.add_argument("r", help="Darstellung 'b' oder 'i' binaer/index")
+    parser.add_argument("s", help="Darstellung 'w','o','w2'  wg/optables/test (w2 ignores arg r)")
     parser.add_argument("-v", "--verbose", help="Ausführlichere Anzeige",
                         action="store_true")
     args = parser.parse_args()
@@ -60,13 +60,14 @@ def main():
 def demo():
     simu = SimuGF()
     representation='n'
+    show='w2'
 # Generating the field GF(2^3)
     basis=2
     power=3
 
     irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
 
-    simu.work(basis, power, irr_poly, representation)
+    simu.work(basis, power, irr_poly, representation, show)
 
     basis=2
     power=3
@@ -79,9 +80,9 @@ def demo():
     irr_poly_g=[1, 1 ,2] #g=x^2+x-1
     irr_poly_h=[1, 2 ,2] #h=x^2-x-1
 
-    simu.work(basis, power, irr_poly_f, representation)
-    simu.work(basis, power, irr_poly_g, representation)
-    simu.work(basis, power, irr_poly_h, representation)
+    simu.work(basis, power, irr_poly_f, representation, show)
+    simu.work(basis, power, irr_poly_g, representation, show)
+    simu.work(basis, power, irr_poly_h, representation, show)
 
 
 if __name__ == '__main__':

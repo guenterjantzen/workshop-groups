@@ -6,7 +6,9 @@
 import argparse
 import os.path
 from galois_field import GFpn
+
 from .board import Board
+
 class SimuGF:
     def work(self, basis, power, irr_poly, representation, show='w', verbose=False):
         gf = GFpn(basis, irr_poly)
@@ -22,6 +24,9 @@ class SimuGF:
 
         elToBin={}
         BinToEl={}
+
+        self.b_list =  []
+        self.b_index = {}
 
         els_info=[]
         els=[]
@@ -45,6 +50,7 @@ class SimuGF:
             #print (i,b)
             elToBin[str(el)]=b
             BinToEl[b]=el
+            self.b_index[b]=i
 
         if verbose:
             for i,(b,el) in enumerate(sorted(BinToEl.items())):
@@ -73,7 +79,6 @@ class SimuGF:
             print()
 
 
-
     def show_workshop2(self, els, elToBin):
         table={}
         for h, el_h in enumerate(els):#block
@@ -82,21 +87,22 @@ class SimuGF:
                     if (h,i,j) not in table:
                         el = el_j*el_i + el_h
                         b=elToBin[str(el)]
-                        table[(h,i,j)] = b
+                        index_b = self.b_index[b]
+                        table[(h,i,j)] = index_b
 
         print (f'\nWorkshop2 {self.info} ')
 
         n = len(els)
-        board = Board(N=n,show_modulo=True)
+        board = Board(N=n,show_modulo=False)
 
         for row in range(n):
             for col in range(n):
                 pair = (row,col)
                 meeting=set()
                 for j in range(n):
-                    b = table[(col,row,j)]
-                    b = j * n + int(b)
-                    meeting.add(b)
+                    index_b = table[(col,row,j)]
+                    person_index = j * n + int(index_b)
+                    meeting.add(person_index)
                 board.set_meeting(meeting, pair)
         board.test()
         board.show(comment=';)', do_test=True)

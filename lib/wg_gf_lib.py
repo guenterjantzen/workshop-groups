@@ -88,12 +88,13 @@ class SimuGF:
         for row in range(n):
             for col in range(n):
                 pair = (row,col)
-                meeting=[]
+                meeting=set()
                 for j in range(n):
                     b = table[(col,row,j)]
                     b = j * n + int(b)
-                    meeting.append(b)
+                    meeting.add(b)
                 board.set_meeting(meeting, pair)
+        board.test()
         board.show(comment=';)', do_test=True)
 
 

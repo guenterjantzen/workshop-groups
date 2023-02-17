@@ -9,6 +9,7 @@ from galois_field import GFpn
 
 from .board import Board
 
+#-----------------------------
 class GF_OP():
     op_plus={}
     op_mult={}
@@ -16,30 +17,31 @@ class GF_OP():
     def __init__(self, value):
         self.value = value
 
+    #-----------------------------
     def __add__(self, other):
         if isinstance(other, GF_OP):
             return GF_OP(GF_OP.op_plus[(self.value, other.value)])
-
+    #-----------------------------
     def __mul__(self, other):
         if isinstance(other, GF_OP):
             return GF_OP(GF_OP.op_mult[(self.value, other.value)])
-
+    #-----------------------------
     def __str__(self):
         return GF_OP.sign_list[self.value]
 
-
+#-----------------------------
 class MiniGF():
     def __init__(self, els, els_index, sign_list):
-        self.els = els
-        self.els_index = els_index
-        self.sign_list = sign_list
-        self.n = len(self.els)
-
-    def fill_optables(self):
         GF_OP.op_plus={}
         GF_OP_mult={}
-        GF_OP.sign_list = self.sign_list
+        GF_OP.sign_list = sign_list
 
+        self.els = els
+        self.els_index = els_index
+        self.n = len(self.els)
+
+    #-----------------------------
+    def fill_optables(self):
         for i, el1 in enumerate(self.els):
             for j, el2 in enumerate(self.els):
                 i_plus_j=self.els_index[str(el1 + el2)]
@@ -47,8 +49,9 @@ class MiniGF():
                 GF_OP.op_plus[(i,j)] = i_plus_j
                 GF_OP.op_mult[(i,j)] = i_mult_j
 
+    #-----------------------------
     def show_optables(self, info):
-        print (f'\nWorkshop {info} +')
+        print (f'\n{info} +')
         for i in range(self.n):
             for j in range(self.n):
                 a = GF_OP(i)
@@ -56,7 +59,7 @@ class MiniGF():
                 print (str(a + b), end=' ')
             print()
 
-        print (f'\nWorkshop {info} *')
+        print (f'\n{info} *')
         for i in range(self.n):
             for j in range(self.n):
                 a = GF_OP(i)
@@ -64,7 +67,9 @@ class MiniGF():
                 print (str(a * b), end=' ')
             print()
 
+#-----------------------------
 class SimuGF:
+    #-----------------------------
     def work(self, basis, power, irr_poly, representation, show='w', verbose=False):
         gf = GFpn(basis, irr_poly)
 
@@ -116,9 +121,11 @@ class SimuGF:
 
         self.show(info)
 
+    #-----------------------------
     def show_optables(self, info):
         self.miniGF.show_optables(info)
 
+    #-----------------------------
     def fill_table(self):
         table={}
         n = self.n
@@ -131,6 +138,7 @@ class SimuGF:
                         table[(h,i,j)] = el
         return table
 
+    #-----------------------------
     def show_workshop(self, info):
         n = self.n
         table = self.fill_table()
@@ -144,6 +152,7 @@ class SimuGF:
                 print(' | ', end='')
             print()
 
+    #-----------------------------
     def show_workshop2(self, info):
         n = self.n
         table = self.fill_table()
@@ -163,8 +172,7 @@ class SimuGF:
         board.test()
         board.show(comment=';)', do_test=True)
 
-#----------------------------
-
+#-----------------------------
 def demo():
     simu = SimuGF()
     representation='n'
@@ -191,6 +199,6 @@ def demo():
     simu.work(basis, power, irr_poly_g, representation)
     simu.work(basis, power, irr_poly_h, representation)
 
-
+#-----------------------------
 if __name__ == '__main__':
     demo()

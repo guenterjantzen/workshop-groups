@@ -9,11 +9,10 @@ from galois_field import GFpn
 
 from .board import Board
 
-
 class GF_OP():
     op_plus={}
     op_mult={}
-
+    sign_list=[]
     def __init__(self, value):
         self.value = value
 
@@ -26,19 +25,20 @@ class GF_OP():
             return GF_OP(GF_OP.op_mult[(self.value, other.value)])
 
     def __str__(self):
-        return str(self.value)
+        return GF_OP.sign_list[self.value]
+
 
 class MiniGF():
-    def __init__(self, els, els_index, sign_list, info):
+    def __init__(self, els, els_index, sign_list):
         self.els = els
         self.els_index = els_index
         self.sign_list = sign_list
-        self.info=info
         self.n = len(self.els)
 
     def fill_optables(self):
         GF_OP.op_plus={}
         GF_OP_mult={}
+        GF_OP.sign_list = self.sign_list
 
         for i, el1 in enumerate(self.els):
             for j, el2 in enumerate(self.els):
@@ -47,34 +47,28 @@ class MiniGF():
                 GF_OP.op_plus[(i,j)] = i_plus_j
                 GF_OP.op_mult[(i,j)] = i_mult_j
 
-
-    def show_optables(self):
-        print (f'\nWorkshop {self.info} +')
+    def show_optables(self, info):
+        print (f'\nWorkshop {info} +')
         for i in range(self.n):
             for j in range(self.n):
                 a = GF_OP(i)
                 b = GF_OP(j)
-                sign = self.sign_list[a+b]
-                print (sign, end=' ')
+                print (str(a + b), end=' ')
             print()
 
-        print (f'\nWorkshop {self.info} *')
+        print (f'\nWorkshop {info} *')
         for i in range(self.n):
             for j in range(self.n):
                 a = GF_OP(i)
                 b = GF_OP(j)
-                sign = self.sign_list[a*b]
-                print (sign, end=' ')
+                print (str(a * b), end=' ')
             print()
-
-
 
 class SimuGF:
-
     def work(self, basis, power, irr_poly, representation, show='w', verbose=False):
         gf = GFpn(basis, irr_poly)
 
-        self.info = f'GF({basis}^{power}), {irr_poly}'
+        info = f'GF({basis}^{power}), {irr_poly}'
 
         if show=='o':
             self.show = self.show_optables
@@ -83,20 +77,16 @@ class SimuGF:
         elif show=='w2':
             self.show = self.show_workshop2
 
-        self.elToSign={}
-        SignToEl={}
+        sign_list =  []
+        sign_index = {}
 
+        els=[]
+        els_index = {}
 
-        self.sign_list =  []
-        self.sign_index = {}
-
-        els_info=[] #kann weg
-        self.els=[]
-        self.els_index = {}
-
-        for i in range(basis**power):
-            k=i
-            l=[]
+        self.n = basis ** power
+        for i in range(self.n):
+            k = i
+            l = []
             while k !=0:
                 k, rest = divmod(k, basis)
                 l.append(rest)
@@ -106,85 +96,72 @@ class SimuGF:
             l.reverse()
 
             el = gf.elm(l)
-            els_info.append((l, str(el))) #kann weg
-            print (l, str(el))
-            self.els.append(el)
-            self.els_index[str(el)] = i
+            els.append(el)
+            els_index[str(el)] = i
 
             if representation=='b':
                 sign=''.join(map(str,l))
             else:
                 sign=str(i)
-            #print (i,sign)
-            self.elToSign[str(el)] = sign
-            SignToEl[sign] = el
-            self.sign_index[sign]=i
-            self.sign_list.append(sign)
 
-        self.miniGF = miniGF =MiniGF(self.els, self.els_index, self.sign_list, self.info)
+            sign_index[sign]=i
+            sign_list.append(sign)
 
+        self.miniGF = miniGF =MiniGF(els, els_index, sign_list)
         miniGF.fill_optables()
 
-
         if verbose:
-            for i,(sign,el) in enumerate(sorted(SignToEl.items())):
-                print('-- ', i, sign, str(el))
-        self.show()
+            for i in range(self.n):
+                print('-- ', i, sign_list[i], els[i])
 
-    def show_optables(self):
-        self.miniGF.show_optables()
+        self.show(info)
 
-    def show_workshop(self):
+    def show_optables(self, info):
+        self.miniGF.show_optables(info)
+
+    def fill_table(self):
         table={}
-        n = len(self.els)
+        n = self.n
         for h in range(n): #block
-            for i in range(n):   #zeile
+            for i in range(n): #zeile
                 for j in range(n): #spalte
                     if (h,i,j) not in table:
                         e_h, e_i, e_j = GF_OP(h), GF_OP(i), GF_OP(j)
                         el = e_j * e_i + e_h
                         table[(h,i,j)] = el
+        return table
 
-        print (f'\nWorkshop {self.info} ')
+    def show_workshop(self, info):
+        n = self.n
+        table = self.fill_table()
 
-        n = len(self.els)
+        print (f'\nWorkshop {info}')
         for i in range(n):
             for h in range(n):
                 for j in range(n):
                     el = table[(h,i,j)]
-                    print(self.sign_list[el.value], end=' ')
+                    print(str(el), end=' ')
                 print(' | ', end='')
             print()
 
+    def show_workshop2(self, info):
+        n = self.n
+        table = self.fill_table()
 
-    def show_workshop2(self):
-        table={}
-        for h, el_h in enumerate(self.els):#block
-            for i, el_i in enumerate(self.els):   #zeile
-                for j, el_j in enumerate(self.els): #spalte
-                    if (h,i,j) not in table:
-                        e_h, e_i, e_j = GF_OP(h), GF_OP(i), GF_OP(j)
-                        el = e_j * e_i + e_h
-                        table[(h,i,j)] = el
-
-        print (f'\nWorkshop2 {self.info} ')
-
-        n = len(self.els)
+        print (f'\nWorkshop2 {info}')
         board = Board(N=n,show_modulo=False)
-
         for row in range(n):
             for col in range(n):
                 pair = (row,col)
                 meeting=set()
                 for j in range(n):
+                    #Hier kann noch nicht die sign_list verwendet werden
                     index_b = table[(col,row,j)].value
                     person_index = j * n + int(index_b)
                     meeting.add(person_index)
                 board.set_meeting(meeting, pair)
         board.test()
         board.show(comment=';)', do_test=True)
-
-
 
 #----------------------------
 

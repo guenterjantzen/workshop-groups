@@ -10,6 +10,24 @@ from galois_field import GFpn
 from .board import Board
 
 
+class GF_OP():
+    op_plus={}
+    op_mult={}
+
+    def __init__(self, value):
+        self.value = value
+
+    def __add__(self, other):
+        if isinstance(other, GF_OP):
+            return GF_OP(GF_OP.op_plus[(self.value, other.value)])
+
+    def __mul__(self, other):
+        if isinstance(other, GF_OP):
+            return GF_OP(GF_OP.op_mult[(self.value, other.value)])
+
+    def __str__(self):
+        return str(self.value)
+
 class MiniGF():
     def __init__(self, els, els_index, sign_list, info):
         self.els = els
@@ -19,44 +37,37 @@ class MiniGF():
         self.n = len(self.els)
 
     def fill_optables(self):
-        self.op_plus={}
-        self.op_mult={}
+        GF_OP.op_plus={}
+        GF_OP_mult={}
 
         for i, el1 in enumerate(self.els):
             for j, el2 in enumerate(self.els):
                 i_plus_j=self.els_index[str(el1 + el2)]
                 i_mult_j=self.els_index[str(el1 * el2)]
-                self.op_plus[(i,j)] = i_plus_j
-                self.op_mult[(i,j)] = i_mult_j
+                GF_OP.op_plus[(i,j)] = i_plus_j
+                GF_OP.op_mult[(i,j)] = i_mult_j
 
 
     def show_optables(self):
         print (f'\nWorkshop {self.info} +')
         for i in range(self.n):
             for j in range(self.n):
-                i_plus_j = self.op_plus[(i,j)]
-                sign = self.sign_list[i_plus_j]
+                a = GF_OP(i)
+                b = GF_OP(j)
+                sign = self.sign_list[a+b]
                 print (sign, end=' ')
             print()
 
         print (f'\nWorkshop {self.info} *')
         for i in range(self.n):
             for j in range(self.n):
-                i_mult_j = self.op_mult[(i,j)]
-                sign = self.sign_list[i_mult_j]
+                a = GF_OP(i)
+                b = GF_OP(j)
+                sign = self.sign_list[a*b]
                 print (sign, end=' ')
             print()
 
-    def __add__(self, other):
-        if isinstance(other, MiniGF):
-            return MiniGF(self.value + other.value)
 
-    def __mul__(self, other):
-        if isinstance(other, MiniGF):
-            return MiniGF(self.value * other.value)
-
-    def __str__(self):
-        return str(self.value)
 
 class SimuGF:
 
@@ -125,13 +136,14 @@ class SimuGF:
 
     def show_workshop(self):
         table={}
-        for h, el_h in enumerate(self.els):#block
-            for i, el_i in enumerate(self.els):   #zeile
-                for j, el_j in enumerate(self.els): #spalte
+        n = len(self.els)
+        for h in range(n): #block
+            for i in range(n):   #zeile
+                for j in range(n): #spalte
                     if (h,i,j) not in table:
-                        el = el_j*el_i + el_h
-                        sign =self.elToSign[str(el)]
-                        table[(h,i,j)] = sign
+                        e_h, e_i, e_j = GF_OP(h), GF_OP(i), GF_OP(j)
+                        el = e_j * e_i + e_h
+                        table[(h,i,j)] = el
 
         print (f'\nWorkshop {self.info} ')
 
@@ -139,8 +151,8 @@ class SimuGF:
         for i in range(n):
             for h in range(n):
                 for j in range(n):
-                    sign = table[(h,i,j)]
-                    print(sign, end=' ')
+                    el = table[(h,i,j)]
+                    print(self.sign_list[el.value], end=' ')
                 print(' | ', end='')
             print()
 
@@ -151,10 +163,9 @@ class SimuGF:
             for i, el_i in enumerate(self.els):   #zeile
                 for j, el_j in enumerate(self.els): #spalte
                     if (h,i,j) not in table:
-                        el = el_j*el_i + el_h
-                        sign = self.elToSign[str(el)]
-                        index_b = self.sign_index[sign]
-                        table[(h,i,j)] = index_b
+                        e_h, e_i, e_j = GF_OP(h), GF_OP(i), GF_OP(j)
+                        el = e_j * e_i + e_h
+                        table[(h,i,j)] = el
 
         print (f'\nWorkshop2 {self.info} ')
 
@@ -166,7 +177,7 @@ class SimuGF:
                 pair = (row,col)
                 meeting=set()
                 for j in range(n):
-                    index_b = table[(col,row,j)]
+                    index_b = table[(col,row,j)].value
                     person_index = j * n + int(index_b)
                     meeting.add(person_index)
                 board.set_meeting(meeting, pair)

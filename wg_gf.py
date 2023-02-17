@@ -3,6 +3,7 @@
 #https://github.com/syakoo/galois-field
 #pip install git+https://github.com/syakoo/galois-field
 
+
 import argparse, sys, os.path
 from galois_field import GFpn
 from lib.wg_gf_lib import SimuGF
@@ -16,11 +17,29 @@ samples:
 
    {scriptname} 2 3 1101 b w #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
    {scriptname} 2 3 1011 b w
+   {scriptname} 2 4 10011 b w
+   {scriptname} 2 5 100101 b w
 
+   {scriptname} 3 2 101 b w
    {scriptname} 3 2 112 b w
    {scriptname} 3 2 122 b w
+
+   {scriptname} 5 2 102 b w
+   {scriptname} 5 2 103 b w
+   {scriptname} 5 2 111 b w
+   {scriptname} 5 2 141 b w
+   {scriptname} 5 2 112 b w
+   {scriptname} 5 2 142 b w
+   {scriptname} 5 2 123 b w
+   {scriptname} 5 2 133 b w
+   {scriptname} 5 2 124 b w
+   {scriptname} 5 2 134 b w
+
+   https://mast.queensu.ca/~math211/M211OH/m211og43.pdf
+   https://mathworld.wolfram.com/IrreduciblePolynomial.html
    """
     print(sample)
+
 
 #----------------------------
 class ArgumentParser(argparse.ArgumentParser):

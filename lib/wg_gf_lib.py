@@ -13,7 +13,7 @@ from .board import Board
 class GF_OP():
     op_plus={}
     op_mult={}
-    sign_list=[]
+    signs=[]
     def __init__(self, value):
         self.value = value
 
@@ -27,14 +27,14 @@ class GF_OP():
             return GF_OP(GF_OP.op_mult[(self.value, other.value)])
     #-----------------------------
     def __str__(self):
-        return GF_OP.sign_list[self.value]
+        return GF_OP.signs[self.value]
 
 #-----------------------------
 class MiniGF():
-    def __init__(self, els, els_index, sign_list):
+    def __init__(self, els, els_index, signs):
         GF_OP.op_plus={}
         GF_OP_mult={}
-        GF_OP.sign_list = sign_list
+        GF_OP.signs = signs
 
         self.els = els
         self.els_index = els_index
@@ -82,7 +82,7 @@ class SimuGF:
         elif show=='w2':
             self.show = self.show_workshop2
 
-        sign_list =  []
+        signs =  []
         sign_index = {}
 
         els=[]
@@ -110,14 +110,14 @@ class SimuGF:
                 sign=str(i)
 
             sign_index[sign]=i
-            sign_list.append(sign)
+            signs.append(sign)
 
-        self.miniGF = miniGF =MiniGF(els, els_index, sign_list)
+        self.miniGF = miniGF =MiniGF(els, els_index, signs)
         miniGF.fill_optables()
 
         if verbose:
             for i in range(self.n):
-                print('-- ', i, sign_list[i], els[i])
+                print('-- ', i, signs[i], els[i])
 
         self.show(info)
 
@@ -164,9 +164,10 @@ class SimuGF:
                 pair = (row,col)
                 meeting=set()
                 for j in range(n):
-                    #Hier kann noch nicht die sign_list verwendet werden
+                    #board arbeitet noch nicht mit signs. wir nehmen den index
                     index_b = table[(col,row,j)].value
                     person_index = j * n + int(index_b)
+
                     meeting.add(person_index)
                 board.set_meeting(meeting, pair)
         board.test()

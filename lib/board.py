@@ -15,6 +15,7 @@ class Board:
         self.double_persons = N*[None]
         self.init_standard_row0()
         self.init_round = init_round
+
     #-----------------------------
     def init_standard_row0(self):
         #[frozenset({0, 3, 6}), frozenset({1, 4, 7}), frozenset({8, 2, 5})]
@@ -144,6 +145,7 @@ class Board:
 
         lines=[]
         ortho = self.ortho
+
         ok = True
         if do_test:
             lines.append(f'<< board {comment}')
@@ -176,7 +178,7 @@ class Board:
                 linecomments.append(f'  -- {self.double_persons[row]}')
             else:
                 linecomments.append('')
-            if ortho:
+            if ortho == True:
                 orthomeetings=[]
                 for orow in range(n):
                     orthomeetings.append([])

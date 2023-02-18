@@ -40,9 +40,10 @@ def parseargs():
     parser.add_argument("p", help="basis (prim)")
     parser.add_argument("n", help="power")
     parser.add_argument("irr_poly", help="irregular polynom for construction of GF(p^n)")
-    parser.add_argument("representation", help="representation 'b','i','m' binaer/index/modulo")
-    parser.add_argument("procedure", help="procedure 'w','o','w2'  wg/optables/test (w2 ignores arg r)")
-    parser.add_argument("-v", "--verbose", help="Ausführlichere Anzeige",
+    parser.add_argument("representation", help="representation 'b','i','m' binaer/index/modulo (where supported)")
+    parser.add_argument("procedure", help="procedure 'w','op','w2','w2t'  wg/optables/w2/w2-test")
+    parser.add_argument("-o","--ortho", help="orthogonal squares in procedure w2", required=False, action="store_true", default='False')
+    parser.add_argument("-v", "--verbose", help="Verbose",
                         action="store_true")
     args = parser.parse_args()
     return args
@@ -57,9 +58,13 @@ def main():
     irr_poly=[int(c) for c in args.irr_poly]
     representation = args.representation
     procedure = args.procedure
-    verbose=args.verbose
+    verbose = args.verbose
+    ortho = args.ortho
+    if args.verbose:
+        print(args)
+
     simu = SimuGF()
-    simu.work(basis, power, irr_poly, representation, procedure, verbose)
+    simu.work(basis, power, irr_poly, representation=representation, procedure=procedure, ortho=ortho, verbose=verbose)
 
 
 def demo():

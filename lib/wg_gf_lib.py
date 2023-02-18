@@ -70,16 +70,16 @@ class MiniGF():
 #-----------------------------
 class SimuGF:
     #-----------------------------
-    def work(self, basis, power, irr_poly, representation, show='w', verbose=False):
+    def work(self, basis, power, irr_poly, representation, procedure='w', verbose=False):
         gf = GFpn(basis, irr_poly)
 
         info = f'GF({basis}^{power}), {irr_poly}'
 
-        if show=='o':
+        if procedure=='o':
             self.show = self.show_optables
-        elif show=='w':
+        elif procedure=='w':
             self.show = self.show_workshop
-        elif show=='w2':
+        elif procedure=='w2':
             self.show = self.show_workshop2
 
         signs =  []
@@ -104,9 +104,12 @@ class SimuGF:
             els.append(el)
             els_index[str(el)] = i
 
+            self.show_modulo=False
             if representation=='b':
                 sign=''.join(map(str,l))
             else:
+                if representation=='m':
+                    self.show_modulo=True
                 sign=str(i)
 
             sign_index[sign]=i
@@ -158,7 +161,7 @@ class SimuGF:
         table = self.fill_table()
 
         print (f'\nWorkshop2 {info}')
-        board = Board(N=n,show_modulo=False)
+        board = Board(N=n,show_modulo=self.show_modulo)
         for row in range(n):
             for col in range(n):
                 pair = (row,col)

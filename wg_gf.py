@@ -36,12 +36,12 @@ class ArgumentParser(argparse.ArgumentParser):
 
 #----------------------------
 def parseargs():
-    parser = ArgumentParser(description='GF Tables ')
+    parser = ArgumentParser(description='List lexical sorted complete quadratic workshops with n*n persons and team size n.')
     parser.add_argument("p", help="basis (prim)")
     parser.add_argument("n", help="power")
-    parser.add_argument("i", help="irr poly")
-    parser.add_argument("r", help="Darstellung 'b' oder 'i' binaer/index")
-    parser.add_argument("s", help="Darstellung 'w','o','w2'  wg/optables/test (w2 ignores arg r)")
+    parser.add_argument("irr_poly", help="irregular polynom for construction of GF(p^n)")
+    parser.add_argument("representation", help="representation 'b','i','m' binaer/index/modulo")
+    parser.add_argument("procedure", help="procedure 'w','o','w2'  wg/optables/test (w2 ignores arg r)")
     parser.add_argument("-v", "--verbose", help="Ausführlichere Anzeige",
                         action="store_true")
     args = parser.parse_args()
@@ -54,12 +54,12 @@ def main():
 
     basis=int(args.p)
     power=int(args.n)
-    irr_poly=[int(c) for c in args.i]
-    representation = args.r
-    show = args.s
+    irr_poly=[int(c) for c in args.irr_poly]
+    representation = args.representation
+    procedure = args.procedure
     verbose=args.verbose
     simu = SimuGF()
-    simu.work(basis, power, irr_poly, representation, show, verbose)
+    simu.work(basis, power, irr_poly, representation, procedure, verbose)
 
 
 def demo():

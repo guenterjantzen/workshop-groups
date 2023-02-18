@@ -23,10 +23,6 @@ samples:
    {scriptname} 3 2 122 b w
 
    {scriptname} 5 2 102 b w
-
-
-   https://mast.queensu.ca/~math211/M211OH/m211og43.pdf
-   https://mathworld.wolfram.com/IrreduciblePolynomial.html
    """
     print(sample)
 

@@ -2,7 +2,7 @@ from .helper import ordered_pairs
 from .helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, show_modulo=False, ortho=False, sym=False):
+    def __init__(self, N, show_modulo=False, ortho=False, sym=False, init_round=True):
         self.N = N
         self.NN = N*N
         self.show_modulo= show_modulo
@@ -14,7 +14,7 @@ class Board:
         self.double_pairs = set()
         self.double_persons = N*[None]
         self.init_standard_row0()
-
+        self.init_round = init_round
     #-----------------------------
     def init_standard_row0(self):
         #[frozenset({0, 3, 6}), frozenset({1, 4, 7}), frozenset({8, 2, 5})]
@@ -134,6 +134,13 @@ class Board:
 
     #-----------------------------
     def show(self, comment, do_test = False):
+        def print_line(linemeetings, linecomments):
+            #print(linemeetings, linecomments)
+            linetokens = [Board.format_meeting(lmeeting) for lmeeting in linemeetings]
+            line = f'{" ".join(linetokens)}'
+            comment = f'{" ".join(linecomments)}'
+            lines.append(f'{line} {comment}')
+
         lines=[]
         ortho = self.ortho
         ok = True
@@ -145,7 +152,6 @@ class Board:
             linemeetings=[]
             linecomments=[]
             row+=1
-            deltarow = [None]*n
             for col in range(n):
                 meeting = self.board.get((row,col))
                 if not meeting:
@@ -153,12 +159,7 @@ class Board:
                 lmeeting = sorted(meeting)
                 if self.show_modulo:
                     lmeeting = [x % n for x in lmeeting]
-                #if not lmeeting:
-                #    break
                 linemeetings.append(lmeeting)
-
-            #if not lmeeting:
-            #    break
             if not meeting:
                 break
             if do_test and self.double_persons[row]:
@@ -167,11 +168,6 @@ class Board:
                 linecomments.append(f'  -- {self.double_persons[row]}')
             else:
                 linecomments.append('')
-            if False and row > 0:
-                for col in range(n):
-                     print (deltarow[col], end=' ')
-                print()
-
             if ortho:
                 orthomeetings=[]
                 for orow in range(n):
@@ -179,12 +175,7 @@ class Board:
                     for ocol in range(n):
                         orthomeetings[orow].append(linemeetings[ocol][orow])
                 linemeetings = orthomeetings
-
-            linetokens = [Board.format_meeting(lmeeting) for lmeeting in linemeetings]
-            line = f'{" ".join(linetokens)}'
-            comment = f'{" ".join(linecomments)}'
-            lines.append(f'{line} {comment}')
-
+            print_line(linemeetings, linecomments)
         oktext=''
         if do_test:
             if self.double_pairs:

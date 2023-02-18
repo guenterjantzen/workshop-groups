@@ -134,20 +134,28 @@ class Board:
 
     #-----------------------------
     def show(self, comment, do_test = False):
-        def print_line(linemeetings, linecomments):
+        def build_line(linemeetings, linecomments):
             #print(linemeetings, linecomments)
             linetokens = [Board.format_meeting(lmeeting) for lmeeting in linemeetings]
-            line = f'{" ".join(linetokens)}'
+            line_without_comment = f'{" ".join(linetokens)}'
             comment = f'{" ".join(linecomments)}'
-            lines.append(f'{line} {comment}')
+            line = f'{line_without_comment} {comment}'
+            return line
 
         lines=[]
         ortho = self.ortho
         ok = True
         if do_test:
             lines.append(f'<< board {comment}')
-        row = -1
+
         n = self.N
+        row = -1
+        if self.init_round:
+            for col in range(n):
+                lower, upper = n*col, n*col+n
+                lmeeting = list(range(lower, upper))
+                self.board[(row,col)] = lmeeting
+            row = -2
         while row < n-1:
             linemeetings=[]
             linecomments=[]
@@ -175,7 +183,8 @@ class Board:
                     for ocol in range(n):
                         orthomeetings[orow].append(linemeetings[ocol][orow])
                 linemeetings = orthomeetings
-            print_line(linemeetings, linecomments)
+            line = build_line(linemeetings, linecomments)
+            lines.append(line)
         oktext=''
         if do_test:
             if self.double_pairs:

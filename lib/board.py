@@ -14,7 +14,7 @@ class Board:
         self.double_pairs = set()
         self.double_persons = N*[None]
         self.init_standard_row0()
-        self.init_round = init_round
+        self.init_round = init_round and not (show_modulo)
 
     #-----------------------------
     def init_standard_row0(self):
@@ -130,7 +130,7 @@ class Board:
     def format_meeting(lmeeting):
         s=[f'{person:>2}' for person in lmeeting]
         sep = ' '
-        return f'[{sep.join(s)}]'
+        return sep.join(s)
 
 
     #-----------------------------
@@ -138,7 +138,7 @@ class Board:
         def build_line(linemeetings, linecomments):
             #print(linemeetings, linecomments)
             linetokens = [Board.format_meeting(lmeeting) for lmeeting in linemeetings]
-            line_without_comment = f'{" ".join(linetokens)}'
+            line_without_comment = "|".join(linetokens)
             comment = f'{" ".join(linecomments)}'
             line = f'{line_without_comment} {comment}'
             return line

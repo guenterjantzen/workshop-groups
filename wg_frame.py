@@ -16,8 +16,8 @@ def parseargs():
                     description = 'What the program does',
                     epilog = 'Text at the bottom of help')
     parser.add_argument("N", help="Number of Participants", type=int)
-    parser.add_argument("-s","--maxsize", nargs='?', help="max groupsize", type=int)
-    parser.add_argument("-c", "--groupcount", nargs='?', help="group count", type=int)
+    parser.add_argument("-ms","--maxsize", nargs='?', help="max teamsize", type=int)
+    parser.add_argument("-gc", "--groupcount", nargs='?', help="nr of teams ", type=int)
     args = parser.parse_args()
     return args
 

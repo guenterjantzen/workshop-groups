@@ -2,20 +2,27 @@ from .helper import ordered_pairs
 from .helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, show_modulo=False, ortho=False, sym=False, init_round=True):
+    def __init__(self, N, show_modulo=False, ortho=False, sym=False, init_round=True, signs=None, verbose=False):
         self.N = N
         self.NN = N*N
-        self.show_modulo= show_modulo
-        self.ortho=ortho
-        self.sym = sym
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
         self.norm_row0 = False
         self.double_pairs = set()
         self.double_persons = N*[None]
         self.init_standard_row0()
+        self.signs = signs or [str(i) for i in range(self.NN)]
+        if signs:
+            if len(signs) == N:
+                show_modulo = True
+            elif len(signs)== self.NN:
+                show_modulo = False
+        self.ortho=ortho
+        self.sym = sym
         self.init_round = init_round and not (show_modulo)
-
+        self.show_modulo= show_modulo
+        if verbose:
+            print(473, self.signs)
     #-----------------------------
     def init_standard_row0(self):
         #[frozenset({0, 3, 6}), frozenset({1, 4, 7}), frozenset({8, 2, 5})]
@@ -126,19 +133,18 @@ class Board:
         self.double_pairs = sorted(self.double_pairs)
 
     #-----------------------------
-    @staticmethod
-    def format_meeting(lmeeting):
-        s=[f'{person:>2}' for person in lmeeting]
+
+    def format_meeting(self, lmeeting):
+        s=[f'{self.signs[i]:>2}' for i in lmeeting]
         sep = ' '
         return sep.join(s)
-
 
     #-----------------------------
     def show(self, comment, do_test = False):
         def build_line(linemeetings, linecomments):
             #print(linemeetings, linecomments)
-            linetokens = [Board.format_meeting(lmeeting) for lmeeting in linemeetings]
-            line_without_comment = "|".join(linetokens)
+            linetokens = [self.format_meeting(lmeeting) for lmeeting in linemeetings]
+            line_without_comment = " | ".join(linetokens)
             comment = f'{" ".join(linecomments)}'
             line = f'{line_without_comment} {comment}'
             return line
@@ -168,7 +174,7 @@ class Board:
                     break
                 lmeeting = sorted(meeting)
                 if self.show_modulo:
-                    lmeeting = [x % n for x in lmeeting]
+                    lmeeting = [i % n for i in lmeeting]
                 linemeetings.append(lmeeting)
             if not meeting:
                 break

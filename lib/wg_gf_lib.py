@@ -50,7 +50,7 @@ class MiniGF():
                 GF_OP.op_mult[(i,j)] = i_mult_j
 
     #-----------------------------
-    def show_optables(self, info):
+    def show_optables(self, info, signs):
         print (f'\n{info} +')
         for i in range(self.n):
             for j in range(self.n):
@@ -75,9 +75,9 @@ class SimuGF:
 
         info = f'GF({basis}^{power}), {irr_poly}'
 
-        self.show_modulo = False
         self.do_test = False
         self.ortho = ortho
+        self.verbose = verbose
 
         if procedure=='op':
             self.show = self.show_optables
@@ -90,12 +90,19 @@ class SimuGF:
             self.do_test = True
 
         signs =  []
-        sign_index = {}
 
         els=[]
         els_index = {}
 
         self.n = basis ** power
+
+        if representation=='b':
+            self.show_modulo=True
+        elif representation=='m':
+            self.show_modulo=True
+        elif representation=='n':
+            self.show_modulo=False
+
         for i in range(self.n):
             k = i
             l = []
@@ -113,13 +120,18 @@ class SimuGF:
 
             if representation=='b':
                 sign=''.join(map(str,l))
-            else:
-                if representation=='m':
-                    self.show_modulo=True
+                signs.append(sign)
+            elif representation=='m':
                 sign=str(i)
+                signs.append(sign)
+            elif representation=='n':
+                pass
+            else:
+                assert False, representation
 
-            sign_index[sign]=i
-            signs.append(sign)
+        if not self.show_modulo:
+            assert not signs, signs
+            signs=[str(i) for i in range(self.n *self.n)]
 
         self.miniGF = miniGF =MiniGF(els, els_index, signs)
         miniGF.fill_optables()
@@ -128,11 +140,11 @@ class SimuGF:
             for i in range(self.n):
                 print('-- ', i, signs[i], els[i])
 
-        self.show(info)
+        self.show(info, signs)
 
     #-----------------------------
-    def show_optables(self, info):
-        self.miniGF.show_optables(info)
+    def show_optables(self, info, signs):
+        self.miniGF.show_optables(info, signs)
 
     #-----------------------------
     def fill_table(self):
@@ -148,7 +160,7 @@ class SimuGF:
         return table
 
     #-----------------------------
-    def show_workshop(self, info):
+    def show_workshop(self, info, signs):
         n = self.n
         table = self.fill_table()
 
@@ -157,26 +169,24 @@ class SimuGF:
             for h in range(n):
                 for j in range(n):
                     el = table[(h,i,j)]
-                    print(str(el), end=' ')
+                    print(signs[el.value], end=' ')
                 print(' | ', end='')
             print()
 
     #-----------------------------
-    def show_workshop2(self, info):
+    def show_workshop2(self, info, signs):
         n = self.n
         table = self.fill_table()
 
         print (f'\nWorkshop2 {info}')
-        board = Board(N = n, show_modulo = self.show_modulo, ortho = self.ortho)
+        board = Board(N = n, show_modulo = self.show_modulo, ortho = self.ortho, signs=signs, verbose=self.verbose)
         for row in range(n):
             for col in range(n):
                 pair = (row,col)
                 meeting=set()
                 for j in range(n):
-                    #board arbeitet noch nicht mit signs. wir nehmen den index
                     index_b = table[(col,row,j)].value
                     person_index = j * n + int(index_b)
-
                     meeting.add(person_index)
                 board.set_meeting(meeting, pair)
         if self.do_test:

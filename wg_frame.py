@@ -16,50 +16,58 @@ def parseargs():
                     description = 'What the program does',
                     epilog = 'Text at the bottom of help')
     parser.add_argument("N", help="Number of Participants", type=int)
-    parser.add_argument("-ms","--maxsize", nargs='?', help="max teamsize", type=int)
-    parser.add_argument("-gc", "--groupcount", nargs='?', help="nr of teams ", type=int)
+    parser.add_argument("-ms","--maxsize", nargs='?', help="max group size", type=int)
+    parser.add_argument("-gc", "--groupcount", nargs='?', help="nr of groups ", type=int)
     args = parser.parse_args()
     return args
 
 #----------------------------
+class Work():
+    def evaluate_some_args(self, args):
+        print(4711, args)
+
+        maxsize = args.maxsize
+        groupcount = args.groupcount
+        N = args.N
+
+        assert maxsize or groupcount
+
+        def calc_group_size_bounds(N, groupcount, max_size_to_check=None):
+            n_div_gc, rest = divmod(N, groupcount)
+            if rest == 0:
+                maxsize = n_div_gc
+            else:
+                maxsize = n_div_gc + 1
+
+            if max_size_to_check:
+                assert max_size_to_check == maxsize, (f'max group size should be {max_size_to_check}, not {maxsize}')
+
+            minsize = maxsize -1
+            return minsize, maxsize, n_div_gc, rest
+
+        if maxsize and not groupcount:
+            groupcount = math.ceil(N/maxsize)
+        minsize, maxsize, n_div_gc, rest = calc_group_size_bounds(N, groupcount, maxsize)
+
+        nmin = groupcount - rest
+        nmax = rest
+        partition = nmin * [n_div_gc] + nmax * [n_div_gc + 1]
+        partition = '-'.join([str(m) for m in partition])
+
+        return maxsize, groupcount, partition
+
 def main():
     args=parseargs()
-    print(4711, args)
-
-    maxsize=args.maxsize
-    groupcount=args.groupcount
-    N=args.N
-
-    assert maxsize or groupcount
-
-    if groupcount:
-        div, mod=divmod(N,groupcount)
-        maxsize0 = div if mod==0 else div+1
-        if maxsize:
-            assert maxsize0==maxsize, (f'max groupsize should be {maxsize0}, not {maxsize}')
-        else:
-            maxsize = maxsize0
-    elif maxsize:
-        groupcount = math.ceil(N/maxsize)
-        div, mod=divmod(N,groupcount)
-
-    nmin = groupcount - mod
-    nmax = mod
-
-    partition = nmin * [div] + nmax * [div +1]
-    partition = '-'.join([str(m) for m in partition])
+    work = Work()
+    maxsize, groupcount, partition = work.evaluate_some_args(args)
 
     print(partition)
-    #     div  mod
-   #15:4=  3 R 3  3-4-4-4
-   #16:4=  4 R 0  4-4-4-4
-   #17:4 = 4 R 1  4-4-4-5
+    #     n_div_gc  mod
+    #15:4=  3 R 3  3-4-4-4
+    #16:4=  4 R 0  4-4-4-4
+    #17:4 = 4 R 1  4-4-4-5
 
-
-    print(4720, f'N={N}, maxsize={maxsize}, groupcount={groupcount}')
-
-
-    #cnt_minsize = groupcount
+    print(4720, f'N={args.N}, maxsize={maxsize}, groupcount={groupcount}')
 
 #----------------------------
 if __name__ == '__main__':

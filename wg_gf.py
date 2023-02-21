@@ -52,8 +52,10 @@ def parseargs():
                         action="store_true")
     args = parser.parse_args()
 
-    #./wg_gf.py 4 n w2 --ma 4
-    #./wg_gf.py 8 b w -ms 4
+    #./wg_gf.py 14 -ms 4 n w2
+    #./wg_gf.py 15 n w2 --ma 4
+    #./wg_gf.py 64 b w -ms 4
+    #./wg_gf.py 25  n w2 -gc 8
     return args
 
 #----------------------------

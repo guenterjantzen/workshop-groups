@@ -2,9 +2,10 @@ from .helper import ordered_pairs
 from .helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, show_modulo=False, ortho=False, sym=False, init_round=True, signs=None, verbose=False):
+    def __init__(self, N, person_count=None, show_modulo=False, ortho=False, sym=False, init_round=True, signs=None, verbose=False):
         self.N = N
         self.NN = N*N
+        self.person_count = person_count or N*N
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
         self.norm_row0 = False
@@ -135,7 +136,7 @@ class Board:
     #-----------------------------
 
     def format_meeting(self, lmeeting):
-        s=[f'{self.signs[i]:>2}' for i in lmeeting]
+        s=[f'{self.signs[i]:>2}' if i < self.person_count else '  ' for i in lmeeting ]
         sep = ' '
         return sep.join(s)
 

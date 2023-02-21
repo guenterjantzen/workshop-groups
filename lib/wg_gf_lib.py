@@ -70,11 +70,12 @@ class MiniGF():
 #-----------------------------
 class SimuGF:
     #-----------------------------
-    def work(self, basis, power, irr_poly, representation, procedure='w', ortho=False, verbose=False):
+    def work(self, person_count, basis, power, irr_poly, representation, procedure='w', ortho=False, verbose=False):
         gf = GFpn(basis, irr_poly)
 
         info = f'GF({basis}^{power}), {irr_poly}'
 
+        self.person_count = person_count
         self.do_test = False
         self.ortho = ortho
         self.verbose = verbose
@@ -179,7 +180,7 @@ class SimuGF:
         table = self.fill_table()
 
         print (f'\nWorkshop2 {info}')
-        board = Board(N = n, show_modulo = self.show_modulo, ortho = self.ortho, signs=signs, verbose=self.verbose)
+        board = Board(N = n, person_count=self.person_count, show_modulo = self.show_modulo, ortho = self.ortho, signs=signs, verbose=self.verbose)
         for row in range(n):
             for col in range(n):
                 pair = (row,col)

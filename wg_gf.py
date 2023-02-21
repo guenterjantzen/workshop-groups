@@ -40,11 +40,11 @@ def parseargs():
     parser = ArgumentParser(description='List lexical sorted workshops without pair repetition')
     #parser.add_argument("p", help="basis (prim)")
     #parser.add_argument("n", help="power")
-    parser.add_argument("N", help="Number of Participants", type=int)
+    parser.add_argument("person_count", help="Number of Participants", type=int)
     parser.add_argument("-ms","--maxsize", nargs='?', help="max teamsize", type=int)
     parser.add_argument("-gc", "--groupcount", nargs='?', help="nr of teams ", type=int)
 
-    parser.add_argument("irr_poly", help="irregular polynom for construction of GF(p^n)")
+    parser.add_argument("--irr_poly", help="irregular polynom for construction of Galoisfield", required=False, type=str)
     parser.add_argument("representation", help="representation 'b','i','m' binaer/index/modulo (where supported)")
     parser.add_argument("procedure", help="procedure 'w','op','w2','w2t'  wg/optables/w2/w2-test")
     parser.add_argument("-o","--ortho", help="orthogonal squares in procedure w2", required=False, action="store_true", default='False')
@@ -52,75 +52,78 @@ def parseargs():
                         action="store_true")
     args = parser.parse_args()
 
-    #./wg_gf.py 4 111  n w2 --ma 4
-    #./wg_gf.py 8 1011 b w -ms 4
+    #./wg_gf.py 4 n w2 --ma 4
+    #./wg_gf.py 8 b w -ms 4
     return args
+
+#----------------------------
+def calc_group_size_bounds(person_count, groupcount, max_size_to_check=None):
+    n_div_gc, rest = divmod(person_count, groupcount)
+    if rest == 0:
+        maxsize = n_div_gc
+    else:
+        maxsize = n_div_gc + 1
+
+    if max_size_to_check:
+        assert max_size_to_check == maxsize, (f'max group size should be {maxsize}, not {max_size_to_check}')
+
+    minsize = maxsize -1
+    return minsize, maxsize, n_div_gc, rest
 
 #----------------------------
 def evaluate_some_args(args):
 
     conductor = {
-        4 : {'basis' :2, 'power' :2, 'poly' :'111'},
-        8 : {'basis' :2, 'power' :3, 'poly' :'1101'},
-       16 : {'basis' :2, 'power' :4, 'poly' :'10011'},
-       32 : {'basis' :2, 'power' :5, 'poly' :'100101'},
-        9 : {'basis' :3, 'power' :2, 'poly' :'101'},
-       25 : {'basis' :5, 'power' :2, 'poly' :'102'},
+        4 : {'basis' :2, 'power' :2, 'irr_poly' :'111'},
+        8 : {'basis' :2, 'power' :3, 'irr_poly' :'1101'},
+       16 : {'basis' :2, 'power' :4, 'irr_poly' :'10011'},
+       32 : {'basis' :2, 'power' :5, 'irr_poly' :'100101'},
+        9 : {'basis' :3, 'power' :2, 'irr_poly' :'101'},
+       25 : {'basis' :5, 'power' :2, 'irr_poly' :'102'},
     }
+
+
 
     print(4711, args)
 
     maxsize = args.maxsize
     groupcount = args.groupcount
 
-    N = args.N
-
-    if validator.is_prime(N):
-        assert(False,'not implemented yet')
-
-    assert N in (4, 8, 16, 32, 9, 25)
-    basis = conductor[N]['basis']
-    power = conductor[N]['power']
-    poly = conductor[N]['poly']
-
-    assert N == basis**power, (N,basis,power)
-    nr_persons = N*N
-
     assert maxsize or groupcount
 
-    def calc_group_size_bounds(nr_persons, groupcount, max_size_to_check=None):
-        n_div_gc, rest = divmod(nr_persons, groupcount)
-        if rest == 0:
-            maxsize = n_div_gc
-        else:
-            maxsize = n_div_gc + 1
-
-        if max_size_to_check:
-            assert max_size_to_check == maxsize, (f'max group size should be {max_size_to_check}, not {maxsize}')
-
-        minsize = maxsize -1
-        return minsize, maxsize, n_div_gc, rest
-
+    person_count = args.person_count
     if maxsize and not groupcount:
-        groupcount = math.ceil(nr_persons/maxsize)
-    minsize, maxsize, n_div_gc, rest = calc_group_size_bounds(nr_persons, groupcount, maxsize)
+        groupcount = math.ceil(person_count/maxsize)
+
+    minsize, maxsize, n_div_gc, rest = calc_group_size_bounds(person_count, groupcount, maxsize)
 
     nmin = groupcount - rest
     nmax = rest
     partition = nmin * [n_div_gc] + nmax * [n_div_gc + 1]
     partition = '-'.join([str(m) for m in partition])
 
-    return basis, power, maxsize, groupcount, partition
+    N=groupcount
+
+    print(4720, f'person_count={args.person_count}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
+    if validator.is_prime(N):
+        assert(False,'not implemented yet')
+
+    assert N in (4, 8, 16, 32, 9, 25), N
+    basis = conductor[N]['basis']
+    power = conductor[N]['power']
+    irr_poly = args.irr_poly or conductor[N]['irr_poly']
+    irr_poly = [int(c) for c in irr_poly]
+
+    assert N == basis**power, (N,basis,power)
+
+    return basis, power, irr_poly, maxsize, groupcount, partition
 
 #----------------------------
 def main():
     args = parseargs()
-    basis, power, maxsize, groupcount, partition = evaluate_some_args(args)
-    print(4720, f'N={args.N}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
-    #basis, power, delta_part = calc_parameters(args)
+    basis, power, irr_poly, maxsize, groupcount, partition = evaluate_some_args(args)
 
-
-    irr_poly=[int(c) for c in args.irr_poly]
+    person_count = args.person_count
     representation = args.representation
     procedure = args.procedure
     verbose = args.verbose
@@ -129,7 +132,7 @@ def main():
         print(args)
 
     simu = SimuGF()
-    simu.work(basis, power, irr_poly, representation=representation, procedure=procedure, ortho=ortho, verbose=verbose)
+    simu.work(person_count, basis, power, irr_poly, representation=representation, procedure=procedure, ortho=ortho, verbose=verbose)
 
 
 def demo():

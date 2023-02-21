@@ -22,3 +22,5 @@
 
    https://mast.queensu.ca/~math211/M211OH/m211og43.pdf
    https://mathworld.wolfram.com/IrreduciblePolynomial.html
+
+4 8 16 32 9 25

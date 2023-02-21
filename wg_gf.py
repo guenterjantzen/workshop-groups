@@ -7,6 +7,7 @@
 import argparse, sys, os.path, math
 from galois_field import GFpn
 from lib.wg_gf_lib import SimuGF
+from galois_field.core import validator
 
 #----------------------------
 def show_examples():
@@ -37,9 +38,9 @@ class ArgumentParser(argparse.ArgumentParser):
 #----------------------------
 def parseargs():
     parser = ArgumentParser(description='List lexical sorted workshops without pair repetition')
-    parser.add_argument("p", help="basis (prim)")
-    parser.add_argument("n", help="power")
-    #parser.add_argument("N", help="Number of Participants", type=int)
+    #parser.add_argument("p", help="basis (prim)")
+    #parser.add_argument("n", help="power")
+    parser.add_argument("N", help="Number of Participants", type=int)
     parser.add_argument("-ms","--maxsize", nargs='?', help="max teamsize", type=int)
     parser.add_argument("-gc", "--groupcount", nargs='?', help="nr of teams ", type=int)
 
@@ -51,25 +52,44 @@ def parseargs():
                         action="store_true")
     args = parser.parse_args()
 
-    #./wg_gf.py 2 2 111 n w2 --ma 4
-
+    #./wg_gf.py 4 111  n w2 --ma 4
+    #./wg_gf.py 8 1011 b w -ms 4
     return args
 
 #----------------------------
 def evaluate_some_args(args):
+
+    conductor = {
+        4 : {'basis' :2, 'power' :2, 'poly' :'111'},
+        8 : {'basis' :2, 'power' :3, 'poly' :'1101'},
+       16 : {'basis' :2, 'power' :4, 'poly' :'10011'},
+       32 : {'basis' :2, 'power' :5, 'poly' :'100101'},
+        9 : {'basis' :3, 'power' :2, 'poly' :'101'},
+       25 : {'basis' :5, 'power' :2, 'poly' :'102'},
+    }
+
     print(4711, args)
 
     maxsize = args.maxsize
     groupcount = args.groupcount
 
-    basis=int(args.p)
-    power=int(args.n)
-    N = basis**power
+    N = args.N
+
+    if validator.is_prime(N):
+        assert(False,'not implemented yet')
+
+    assert N in (4, 8, 16, 32, 9, 25)
+    basis = conductor[N]['basis']
+    power = conductor[N]['power']
+    poly = conductor[N]['poly']
+
+    assert N == basis**power, (N,basis,power)
+    nr_persons = N*N
 
     assert maxsize or groupcount
 
-    def calc_group_size_bounds(N, groupcount, max_size_to_check=None):
-        n_div_gc, rest = divmod(N, groupcount)
+    def calc_group_size_bounds(nr_persons, groupcount, max_size_to_check=None):
+        n_div_gc, rest = divmod(nr_persons, groupcount)
         if rest == 0:
             maxsize = n_div_gc
         else:
@@ -82,21 +102,21 @@ def evaluate_some_args(args):
         return minsize, maxsize, n_div_gc, rest
 
     if maxsize and not groupcount:
-        groupcount = math.ceil(N/maxsize)
-    minsize, maxsize, n_div_gc, rest = calc_group_size_bounds(N, groupcount, maxsize)
+        groupcount = math.ceil(nr_persons/maxsize)
+    minsize, maxsize, n_div_gc, rest = calc_group_size_bounds(nr_persons, groupcount, maxsize)
 
     nmin = groupcount - rest
     nmax = rest
     partition = nmin * [n_div_gc] + nmax * [n_div_gc + 1]
     partition = '-'.join([str(m) for m in partition])
 
-    return basis, power, N, maxsize, groupcount, partition
+    return basis, power, maxsize, groupcount, partition
 
 #----------------------------
 def main():
     args = parseargs()
-    basis, power, N, maxsize, groupcount, partition = evaluate_some_args(args)
-    print(4720, f'N={N}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
+    basis, power, maxsize, groupcount, partition = evaluate_some_args(args)
+    print(4720, f'N={args.N}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
     #basis, power, delta_part = calc_parameters(args)
 
 

@@ -50,6 +50,8 @@ def parseargs():
     parser.add_argument("-o","--ortho", help="orthogonal squares in procedure w2", required=False, action="store_true", default='False')
     parser.add_argument("-v", "--verbose", help="Verbose",
                         action="store_true")
+    parser.add_argument("-d", "--debug", help="Debug",
+                        action="store_true")
     args = parser.parse_args()
 
     #./wg_gf.py 14 -ms 4 n w2
@@ -74,7 +76,8 @@ def calc_group_size_bounds(person_count, groupcount, max_size_to_check=None):
 
 #----------------------------
 def evaluate_some_args(args):
-    print(4711, args)
+    if args.debug:
+        print(4711, args)
 
     maxsize = args.maxsize
     groupcount = args.groupcount
@@ -92,7 +95,8 @@ def evaluate_some_args(args):
     partition = nmin * [n_div_gc] + nmax * [n_div_gc + 1]
     partition = '-'.join([str(m) for m in partition])
 
-    print(4720, f'person_count={args.person_count}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
+    if args.debug:
+        print(4720, f'person_count={args.person_count}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
 
     return maxsize, groupcount, partition
 

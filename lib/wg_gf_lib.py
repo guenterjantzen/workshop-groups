@@ -128,7 +128,9 @@ class SimuGF:
             if representation=='b':
                 if l:
                     sign=''.join(map(str,l))
-                    signs.append(sign)
+                else:
+                    sign=str(i)
+                signs.append(sign)
             elif representation=='m':
                 sign=str(i)
                 signs.append(sign)
@@ -145,8 +147,11 @@ class SimuGF:
         miniGF.fill_optables()
 
         if verbose:
-            for i in range(self.n):
-                print('-- ', i, signs[i], els[i])
+            print (455, els)
+            print (456, signs)
+            for i in range(min(len(els),len(signs))):
+                print('-- ', i, els[i], signs[i])
+
 
         self.show(info, signs)
 

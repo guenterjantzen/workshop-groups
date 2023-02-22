@@ -12,12 +12,20 @@ class Board:
         self.double_pairs = set()
         self.double_persons = N*[None]
         self.init_standard_row0()
-        self.signs = signs or [str(i) for i in range(self.NN)]
-        if signs:
+        if show_modulo:
+            self.signs = signs or [str(i%N) for i in range(self.NN)]
             if len(signs) == N:
-                show_modulo = True
-            elif len(signs)== self.NN:
-                show_modulo = False
+                self.signs = N * self.signs
+            show_modulo = False
+
+        else:
+            self.signs = signs or [str(i) for i in range(self.NN)]
+
+        #if signs:
+        #    if len(signs) == N:
+        #        show_modulo = True
+        #    elif len(signs)== self.NN:
+        #        show_modulo = False
         self.ortho=ortho
         self.sym = sym
         self.init_round = init_round and not (show_modulo)

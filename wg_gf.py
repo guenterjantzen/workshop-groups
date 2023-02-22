@@ -74,18 +74,6 @@ def calc_group_size_bounds(person_count, groupcount, max_size_to_check=None):
 
 #----------------------------
 def evaluate_some_args(args):
-
-    conductor = {
-        4 : {'basis' :2, 'power' :2, 'irr_poly' :'111'},
-        8 : {'basis' :2, 'power' :3, 'irr_poly' :'1101'},
-       16 : {'basis' :2, 'power' :4, 'irr_poly' :'10011'},
-       32 : {'basis' :2, 'power' :5, 'irr_poly' :'100101'},
-        9 : {'basis' :3, 'power' :2, 'irr_poly' :'101'},
-       25 : {'basis' :5, 'power' :2, 'irr_poly' :'102'},
-    }
-
-
-
     print(4711, args)
 
     maxsize = args.maxsize
@@ -104,26 +92,38 @@ def evaluate_some_args(args):
     partition = nmin * [n_div_gc] + nmax * [n_div_gc + 1]
     partition = '-'.join([str(m) for m in partition])
 
-    N=groupcount
-
     print(4720, f'person_count={args.person_count}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
-    if validator.is_prime(N):
-        assert(False,'not implemented yet')
 
-    assert N in (4, 8, 16, 32, 9, 25), N
-    basis = conductor[N]['basis']
-    power = conductor[N]['power']
-    irr_poly = args.irr_poly or conductor[N]['irr_poly']
-    irr_poly = [int(c) for c in irr_poly]
-
-    assert N == basis**power, (N,basis,power)
-
-    return basis, power, irr_poly, maxsize, groupcount, partition
+    return maxsize, groupcount, partition
 
 #----------------------------
 def main():
     args = parseargs()
-    basis, power, irr_poly, maxsize, groupcount, partition = evaluate_some_args(args)
+    maxsize, groupcount, partition = evaluate_some_args(args)
+    groupcount_is_prime = validator.is_prime(groupcount)
+
+    if groupcount_is_prime:
+        irr_poly = None
+        basis = groupcount
+        power = 1
+    else:
+        assert groupcount in (4, 8, 16, 32, 9, 25), groupcount
+
+        conductor = {
+            4 : {'basis' :2, 'power' :2, 'irr_poly' :'111'},
+            8 : {'basis' :2, 'power' :3, 'irr_poly' :'1101'},
+           16 : {'basis' :2, 'power' :4, 'irr_poly' :'10011'},
+           32 : {'basis' :2, 'power' :5, 'irr_poly' :'100101'},
+            9 : {'basis' :3, 'power' :2, 'irr_poly' :'101'},
+           25 : {'basis' :5, 'power' :2, 'irr_poly' :'102'},
+        }
+
+        basis = conductor[groupcount]['basis']
+        power = conductor[groupcount]['power']
+        irr_poly = args.irr_poly or conductor[groupcount]['irr_poly']
+        irr_poly = [int(c) for c in irr_poly]
+
+    assert groupcount == basis**power, (groupcount,basis,power)
 
     person_count = args.person_count
     representation = args.representation
@@ -136,7 +136,7 @@ def main():
     simu = SimuGF()
     simu.work(person_count, basis, power, irr_poly, representation=representation, procedure=procedure, ortho=ortho, verbose=verbose)
 
-
+#----------------------------
 def demo():
     simu = SimuGF()
     representation='n'

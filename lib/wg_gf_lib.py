@@ -5,7 +5,7 @@
 
 import argparse
 import os.path
-from galois_field import GFpn
+from galois_field import GFpn, GFp
 
 from .board import Board
 
@@ -71,9 +71,12 @@ class MiniGF():
 class SimuGF:
     #-----------------------------
     def work(self, person_count, basis, power, irr_poly, representation, procedure='w', ortho=False, verbose=False):
-        gf = GFpn(basis, irr_poly)
+        if power > 1:
+            gf = GFpn(basis, irr_poly)
+        elif power == 1:
+            gf = GFp(basis)
 
-        info = f'GF({basis}^{power}), {irr_poly}'
+        info = f'GF({basis}^{power}) {irr_poly or ""}'
 
         self.person_count = person_count
         self.do_test = False
@@ -107,21 +110,25 @@ class SimuGF:
         for i in range(self.n):
             k = i
             l = []
-            while k !=0:
-                k, rest = divmod(k, basis)
-                l.append(rest)
+            if power > 1:
+                while k !=0:
+                    k, rest = divmod(k, basis)
+                    l.append(rest)
 
-            while len(l) < power:
-                l.append(0)
-            l.reverse()
+                while len(l) < power:
+                    l.append(0)
+                l.reverse()
 
-            el = gf.elm(l)
+                el = gf.elm(l)
+            else:
+                el = gf.elm(i)
             els.append(el)
             els_index[str(el)] = i
 
             if representation=='b':
-                sign=''.join(map(str,l))
-                signs.append(sign)
+                if l:
+                    sign=''.join(map(str,l))
+                    signs.append(sign)
             elif representation=='m':
                 sign=str(i)
                 signs.append(sign)

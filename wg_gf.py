@@ -45,9 +45,9 @@ def parseargs():
     parser.add_argument("-gc", "--groupcount", nargs='?', help="nr of teams ", type=int)
 
     parser.add_argument("--irr_poly", help="irregular polynom for construction of Galoisfield", required=False, type=str)
-    parser.add_argument("representation", help="representation 'b','i','m' binaer/index/modulo (where supported)")
-    parser.add_argument("procedure", help="procedure 'w','op','w2','w2t'  wg/optables/w2/w2-test")
-    parser.add_argument("-o","--ortho", help="orthogonal squares in procedure w2", required=False, action="store_true", default='False')
+    parser.add_argument("representation", help="representation 'b','m' binaer/modulo (where supported). Default is index", default='n', nargs='?')
+    parser.add_argument("procedure", help="procedure 'w','op','w2'  wg/optables/w2-test. Default is w2", default='w2', nargs='?')
+    parser.add_argument("-o","--ortho", help="orthogonal squares in procedure w2", action="store_true", default='False', required=False)
     parser.add_argument("-v", "--verbose", help="Verbose",
                         action="store_true")
     parser.add_argument("-d", "--debug", help="Debug",

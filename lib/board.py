@@ -2,7 +2,7 @@ from .helper import ordered_pairs
 from .helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, person_count=None, show_modulo=False, ortho=False, sym=False, init_round=True, signs=None, verbose=False):
+    def __init__(self, N, person_count=None, show_modulo=False, ortho=False, sym=False, init_round=True, signs=None, verbose=True):
         self.N = N
         self.NN = N*N
         self.person_count = person_count or N*N
@@ -12,26 +12,19 @@ class Board:
         self.double_pairs = set()
         self.double_persons = N*[None]
         self.init_standard_row0()
+
         if show_modulo:
-            self.signs = signs or [str(i%N) for i in range(self.NN)]
+            signs = signs or [str(i) for i in range(self.N)]
             if len(signs) == N:
-                self.signs = N * self.signs
-            show_modulo = False
-
+                signs = N * signs
         else:
-            self.signs = signs or [str(i) for i in range(self.NN)]
+            signs = signs or [str(i) for i in range(self.NN)]
 
-        #if signs:
-        #    if len(signs) == N:
-        #        show_modulo = True
-        #    elif len(signs)== self.NN:
-        #        show_modulo = False
+        self.signs = signs
         self.ortho=ortho
         self.sym = sym
-        self.init_round = init_round and not (show_modulo)
-        self.show_modulo= show_modulo
-        if verbose:
-            print(473, self.signs)
+        self.init_round = init_round
+
     #-----------------------------
     def init_standard_row0(self):
         #[frozenset({0, 3, 6}), frozenset({1, 4, 7}), frozenset({8, 2, 5})]
@@ -182,8 +175,6 @@ class Board:
                 if not meeting:
                     break
                 lmeeting = sorted(meeting)
-                if self.show_modulo:
-                    lmeeting = [i % n for i in lmeeting]
                 linemeetings.append(lmeeting)
             if not meeting:
                 break

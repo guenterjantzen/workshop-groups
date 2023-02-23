@@ -155,37 +155,35 @@ def evaluate_some_args(args):
         print(f'No Workshops for {person_count} participants found.')
         sys.exit(0)
 
-    found = None
+    founds = []
     for match_object in lookup:
-        matched = False
-
+        match_groupcount=None
+        match_maxsize=None
         if groupcount:
-            if groupcount == match_object.groupcount:
-                found = match_object
+            match_groupcount = (groupcount == match_object.groupcount)
         if maxsize:
-            if maxsize == match_object.maxsize:
-                found = match_object
-        if found:
-            break
+            match_maxsize = (maxsize == match_object.maxsize)
 
-    if not found:
-         if not groupcount and not maxsize:
-            if len(lookup) == 0:
-                show_lookup_and_exit(lookup, person_count, f'No Workshop found for person_count {person_count}.')
-            elif len(lookup) == 1:
-                found = lookup[0]
-            else:
-                show_lookup_and_exit(lookup, person_count, f'Several Workshops found for person_count {person_count}.')
-         else:
-            show_lookup_and_exit(lookup, person_count, f'No Workshop found for {person_param_info}.')
+        match_pair = (match_groupcount, match_maxsize)
 
-    if found:
-        if (groupcount and found.groupcount != groupcount) or (maxsize and found.maxsize != maxsize):
-            show_lookup_and_exit(lookup, person_count, f'No Workshop found for {person_param_info}.')
-        if not groupcount:
-            groupcount = found.groupcount
-        if not maxsize:
-            maxsize = found.maxsize
+        if match_pair in [(True,True),(True,None),(None, True)]:
+            founds.append(match_object)
+
+    print(match_pair, len(founds))
+
+    if not founds:
+        show_lookup_and_exit(lookup, person_count, f'2No Workshop found for {person_param_info}.')
+
+    if founds:
+        if len(founds) > 1:
+            show_lookup_and_exit(lookup, person_count, f'4Several Workshops found for person_count {person_count}.')
+        elif len(founds) == 1:
+            found = lookup[0]
+
+    if not groupcount:
+        groupcount = found.groupcount
+    if not maxsize:
+        maxsize = found.maxsize
 
     if args.debug:
         print(4711, args)

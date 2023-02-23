@@ -1,0 +1,8 @@
+2023-02-23
+
+wg_gf.py: error: unrecognized arguments: ./wg_gf.py 11
+guenter@Hasepeter01:~/GJ/dev/github/workshop-groups$ ./wg_gf.py 11 -s4 -rb
+No Workshop found for person_count=11, groupcount=None, maxsize=4.
+Supported partitions for person_count 11 are:
+--groupcount  4 --maxsize  3 # 2-2-2-3-3-3
+--groupcount  5 --maxsize  3 # 2-2-2-2-3

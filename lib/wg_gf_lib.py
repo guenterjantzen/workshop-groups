@@ -76,7 +76,7 @@ class SimuGF:
         elif power == 1:
             gf = GFp(basis)
 
-        info = f'GF({basis}^{power}) {irr_poly or ""}'
+        info = f'GF({basis}^{power}){(irr_poly or "")}'
 
         self.person_count = person_count
         self.do_test = False
@@ -87,9 +87,9 @@ class SimuGF:
             self.show = self.show_optables
         elif procedure=='w':
             self.show = self.show_workshop
-        elif procedure=='w2':
+        elif procedure=='ws':
             self.show = self.show_workshop2
-        elif procedure=='w2t':
+        elif procedure=='wst':
             self.show = self.show_workshop2
             self.do_test = True
 
@@ -177,7 +177,7 @@ class SimuGF:
         n = self.n
         table = self.fill_table()
 
-        print (f'\nWorkshop {info}')
+        print (f'\nWorkshop {info} for {self.person_count} persons')
         for i in range(n):
             for h in range(n):
                 for j in range(n):
@@ -191,7 +191,7 @@ class SimuGF:
         n = self.n
         table = self.fill_table()
 
-        print (f'\nWorkshop2 {info}')
+        print (f'\nWorkshop2 {info} for {self.person_count} persons')
         board = Board(N = n, person_count=self.person_count, show_modulo = self.show_modulo, ortho = self.ortho, signs=signs, verbose=self.verbose)
         for row in range(n):
             for col in range(n):

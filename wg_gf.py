@@ -14,16 +14,9 @@ def show_examples():
     scriptname = os.path.basename(__file__)
     sample=f"""
 samples:
-   {scriptname} 2 2 111 b w
-
-   {scriptname} 2 3 1101 b w #basis=2 power=3 irr_poly=[1, 1, 0 ,1] #y^3=1+y^2 y^3-y^2-1=0
-   {scriptname} 2 3 1011 b w
-
-   {scriptname} 3 2 101 b w
-   {scriptname} 3 2 112 b w
-   {scriptname} 3 2 122 b w
-
-   {scriptname} 5 2 102 b w
+   {scriptname} 11
+   {scriptname} 11 -s3
+   {scriptname} 11 -s3 -rb
    """
     print(sample)
 
@@ -38,27 +31,44 @@ class ArgumentParser(argparse.ArgumentParser):
 #----------------------------
 def parseargs():
     parser = ArgumentParser(description='List lexical sorted workshops without pair repetition')
-    #parser.add_argument("p", help="basis (prim)")
-    #parser.add_argument("n", help="power")
-    parser.add_argument("person_count", help="Number of Participants", type=int)
-    parser.add_argument("-ms","--maxsize", nargs='?', help="max teamsize", type=int)
-    parser.add_argument("-gc", "--groupcount", nargs='?', help="nr of teams ", type=int)
+    parser.add_argument("person_count", help="number of participants", type=int)
 
-    parser.add_argument("--irr_poly", help="irregular polynom for construction of Galoisfield", required=False, type=str)
-    parser.add_argument("representation", help="representation 'b','m' binaer/modulo (where supported). Default is index", default='n', nargs='?')
-    parser.add_argument("procedure", help="procedure 'w','op','w2'  wg/optables/w2-test. Default is w2", default='w2', nargs='?')
-    parser.add_argument("-o","--ortho", help="orthogonal squares in procedure w2", action="store_true", default='False', required=False)
+    parser.add_argument("-s", "--maxsize", nargs='?', help="max teamsize", type=int)
+    parser.add_argument("-c", "--groupcount", nargs='?', help="nr of teams ", type=int)
+    parser.add_argument("-i", "--irr_poly", help="irregular polynom for construction of Galoisfield (advanced option)", required=False, type=str)
+    parser.add_argument("-r", "--representation", help="'b','m' for binaer/modulo (where supported). Default is 'n' for index", default='n', required=False)
+    parser.add_argument("-p", "--procedure", help="procedure 'w','op','wst'  wg/optables/ws-test. Default is ws for workshop", default='ws', required=False)
+    parser.add_argument("-o", "--ortho", help="orthogonal squares in procedure ws", action="store_true", default='False', required=False)
     parser.add_argument("-v", "--verbose", help="Verbose",
                         action="store_true")
     parser.add_argument("-d", "--debug", help="Debug",
                         action="store_true")
     args = parser.parse_args()
 
-    #./wg_gf.py 14 -ms 4 n w2
-    #./wg_gf.py 15 n w2 --ma 4
-    #./wg_gf.py 64 b w -ms 4
-    #./wg_gf.py 25  n w2 -gc 8
     return args
+
+conductor = {
+        4 : {'basis' :2, 'power' :2, 'irr_poly' :'111'},
+        8 : {'basis' :2, 'power' :3, 'irr_poly' :'1101'},
+       16 : {'basis' :2, 'power' :4, 'irr_poly' :'10011'},
+       32 : {'basis' :2, 'power' :5, 'irr_poly' :'100101'},
+        9 : {'basis' :3, 'power' :2, 'irr_poly' :'101'},
+       25 : {'basis' :5, 'power' :2, 'irr_poly' :'102'},
+    }
+
+#----------------------------
+def calc_group_size_bounds0(person_count, groupcount, max_size_to_check=None):
+    n_div_gc, rest = divmod(person_count, groupcount)
+    if rest == 0:
+        maxsize = n_div_gc
+    else:
+        maxsize = n_div_gc + 1
+
+    if max_size_to_check:
+        assert max_size_to_check == maxsize, (f'max group size should be {maxsize}, not {max_size_to_check}')
+
+    minsize = maxsize -1
+    return minsize, maxsize, n_div_gc, rest
 
 #----------------------------
 def calc_group_size_bounds(person_count, groupcount, max_size_to_check=None):
@@ -75,52 +85,129 @@ def calc_group_size_bounds(person_count, groupcount, max_size_to_check=None):
     return minsize, maxsize, n_div_gc, rest
 
 #----------------------------
+def show_lookup_and_exit(lookup, person_count, comment):
+    print (comment)
+    print (f'Supported partitions for person_count {person_count} are:')
+    for match_object in lookup:
+        print(match_object)
+    sys.exit()
+
+#----------------------------
 def evaluate_some_args(args):
-    if args.debug:
-        print(4711, args)
+    class MatchObject:
+        #----------------------------
+        def __init__(self, person_count, groupcount, maxsize, minsize, rest):
+            self.person_count = person_count
+            self.groupcount = groupcount
+            self.maxsize = maxsize
+            self.minsize = minsize
+            self.rest = rest
+        #----------------------------
+        def __str__(self):
+            person_count = self.person_count
+            groupcount = self.groupcount
+            minsize = self.minsize
+            maxsize = self.maxsize
+            rest = self.rest
+
+            nmin = groupcount - rest
+            nmax = rest
+            partition = nmin * [minsize] + nmax * [maxsize]
+            partition = '-'.join([str(x) for x in partition])
+            assert nmin * minsize + nmax * maxsize == person_count, f'person_count={person_count} partition={partition}, {nmin} {nmax} gc{groupcount}'
+            return f'--groupcount {groupcount:>2} --maxsize {maxsize:>2} # {partition}'
 
     maxsize = args.maxsize
     groupcount = args.groupcount
-
-    assert maxsize or groupcount
-
     person_count = args.person_count
-    if maxsize and not groupcount:
-        groupcount = math.ceil(person_count/maxsize)
+    verbose = args.verbose
 
-    minsize, maxsize, n_div_gc, rest = calc_group_size_bounds(person_count, groupcount, maxsize)
+    person_param_info=f'person_count={person_count}, groupcount={groupcount}, maxsize={maxsize}'
 
-    nmin = groupcount - rest
-    nmax = rest
-    partition = nmin * [n_div_gc] + nmax * [n_div_gc + 1]
-    partition = '-'.join([str(m) for m in partition])
+    lower_groupcount = math.ceil(math.sqrt(person_count))
+    upper_groupcount = person_count // 2
+
+    primes100 = {x for x in range(2, 101) if all(x%y for y in range(2, min(x, 11)))}
+    all_valid_groupcounts = set(conductor.keys()).union(primes100)
+    groupcount_range = range(lower_groupcount, upper_groupcount+1)
+    valid_groupcounts = sorted(all_valid_groupcounts.intersection(set(groupcount_range)))
+    if verbose:
+        print(valid_groupcounts)
+
+    lookup=[]
+    if len(valid_groupcounts) > 0:
+        for valid_groupcount in valid_groupcounts:
+            valid_minsize, rest = divmod(person_count, valid_groupcount)
+            if rest == 0:
+                valid_maxsize = valid_minsize
+            else:
+                valid_maxsize = valid_minsize + 1
+
+            valid_minsize0 = math.floor(person_count/valid_groupcount)
+            valid_maxsize0 = math.ceil(person_count/valid_groupcount)
+            assert valid_minsize0 == valid_minsize, f'valid_minsize0={valid_minsize0}, valid_minsize={valid_minsize0}'
+            assert valid_maxsize0 == valid_maxsize, f'valid_maxsize0={valid_maxsize0}, valid_maxsize={valid_maxsize0}'
+
+            match_object = MatchObject(person_count=person_count, groupcount = valid_groupcount, maxsize = valid_maxsize, minsize = valid_minsize, rest=rest)
+            lookup.append(match_object)
+
+    if not lookup:
+        print(f'No Workshops for {person_count} participants found.')
+        sys.exit(0)
+
+    found = None
+    for match_object in lookup:
+        matched = False
+
+        if groupcount:
+            if groupcount == match_object.groupcount:
+                found = match_object
+        if maxsize:
+            if maxsize == match_object.maxsize:
+                found = match_object
+        if found:
+            break
+
+    if not found:
+         if not groupcount and not maxsize:
+            if len(lookup) == 0:
+                show_lookup_and_exit(lookup, person_count, f'No Workshop found for person_count {person_count}.')
+            elif len(lookup) == 1:
+                found = lookup[0]
+            else:
+                show_lookup_and_exit(lookup, person_count, f'Several Workshops found for person_count {person_count}.')
+         else:
+            show_lookup_and_exit(lookup, person_count, f'No Workshop found for {person_param_info}.')
+
+    if found:
+        if (groupcount and found.groupcount != groupcount) or (maxsize and found.maxsize != maxsize):
+            show_lookup_and_exit(lookup, person_count, f'No Workshop found for {person_param_info}.')
+        if not groupcount:
+            groupcount = found.groupcount
+        if not maxsize:
+            maxsize = found.maxsize
 
     if args.debug:
-        print(4720, f'person_count={args.person_count}, maxsize={maxsize}, groupcount={groupcount} partition={partition}')
+        print(4711, args)
+        print(4720, f'person_count={args.person_count}, maxsize={maxsize}, groupcount={groupcount}')
 
-    return maxsize, groupcount, partition
+    return maxsize, groupcount
 
 #----------------------------
 def main():
     args = parseargs()
-    maxsize, groupcount, partition = evaluate_some_args(args)
+    maxsize, groupcount = evaluate_some_args(args)
     groupcount_is_prime = validator.is_prime(groupcount)
 
     if groupcount_is_prime:
         irr_poly = None
         basis = groupcount
         power = 1
-    else:
-        assert groupcount in (4, 8, 16, 32, 9, 25), groupcount
 
-        conductor = {
-            4 : {'basis' :2, 'power' :2, 'irr_poly' :'111'},
-            8 : {'basis' :2, 'power' :3, 'irr_poly' :'1101'},
-           16 : {'basis' :2, 'power' :4, 'irr_poly' :'10011'},
-           32 : {'basis' :2, 'power' :5, 'irr_poly' :'100101'},
-            9 : {'basis' :3, 'power' :2, 'irr_poly' :'101'},
-           25 : {'basis' :5, 'power' :2, 'irr_poly' :'102'},
-        }
+        print(f"Representation 'b' is not supported for prime groupcount {groupcount}")
+
+    else:
+        assert groupcount in conductor, groupcount
 
         basis = conductor[groupcount]['basis']
         power = conductor[groupcount]['power']
@@ -144,7 +231,7 @@ def main():
 def demo():
     simu = SimuGF()
     representation='n'
-    show='w2'
+    show='ws'
 # Generating the field GF(2^3)
     basis=2
     power=3

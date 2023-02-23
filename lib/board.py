@@ -2,10 +2,12 @@ from .helper import ordered_pairs
 from .helper import DEBUG1, DEBUG2, DEBUG3, DEBUG4, DEBUG5
 class Board:
     #-----------------------------
-    def __init__(self, N, person_count=None, show_modulo=False, ortho=False, sym=False, init_round=True, signs=None, verbose=True):
+    def __init__(self, N, person_count=None, show_modulo=False, ortho=False, sym=False, init_round=True,
+        signs=None, maxsize=None, groupcount=None, verbose=True, debug=False):
         self.N = N
         self.NN = N*N
         self.person_count = person_count or N*N
+        assert person_count <= self.NN
         self.board={}
         self.free_pairs = ordered_pairs(range(self.NN))
         self.norm_row0 = False
@@ -23,7 +25,15 @@ class Board:
         self.signs = signs
         self.ortho=ortho
         self.sym = sym
-        self.init_round = init_round
+        self.maxsize = maxsize
+        self.groupcount = groupcount
+        if show_modulo or person_count < self.NN:
+            self.init_round = False
+        else:
+            self.init_round = init_round
+
+        self.verbose = verbose
+        self.debug = debug
 
     #-----------------------------
     def init_standard_row0(self):
@@ -137,12 +147,29 @@ class Board:
     #-----------------------------
 
     def format_meeting(self, lmeeting):
-        s=[f'{self.signs[i]:>2}' if i < self.person_count else '  ' for i in lmeeting ]
+        width = 2
+        s=[f'{self.signs[i]:>{width}}' if i < self.person_count else ' ' * width for i in lmeeting ]
         sep = ' '
-        return sep.join(s)
+        joined = sep.join(s)
+        factor = self.N if self.init_round else self.maxsize
+        length = (len(sep)+width) * factor
+        #print('length=', length)
+        shortened = joined[:length]
+        rest = shortened[length:].strip()
+        assert rest =="", (shortened, rest, lmeeting)
+        if self.debug:
+            if rest:
+                formatted = f"'{shortened.strip()}'#'{rest}'"
+            else:
+                formatted = f"'{shortened}'/'{joined}'"
+            formatted = formatted.replace(' ','.')
+        else:
+            formatted = shortened
+        return formatted
 
     #-----------------------------
     def show(self, comment, do_test = False):
+        if self.debug: print(3453, f'maxsize={self.maxsize}, groupcount={self.groupcount}')
         def build_line(linemeetings, linecomments):
             #print(linemeetings, linecomments)
             linetokens = [self.format_meeting(lmeeting) for lmeeting in linemeetings]
@@ -164,6 +191,7 @@ class Board:
             for col in range(n):
                 lower, upper = n*col, n*col+n
                 lmeeting = list(range(lower, upper))
+                if self.debug: print(lmeeting, end='#')
                 self.board[(row,col)] = lmeeting
             row = -2
         while row < n-1:

@@ -8,9 +8,9 @@ class Simu:
     #-----------------------------
     def __init__(self, N, show_modulo=False, break_after_first=True, sym=False, ortho=False, do_test=False):
         self.N = N
-        self.NN = N*N
-        self.free_pairs = ordered_pairs(range(self.NN))
-        self.board = Board(N, N*N, show_modulo, ortho, sym)
+        self.NN = NN = N*N
+        self.free_pairs = ordered_pairs(range(NN))
+        self.board = Board(N, person_count=NN, show_modulo=show_modulo, ortho=ortho, sym=sym)
         self.do_test = do_test
         self.break_after_first = break_after_first
         self.reset_all_persons_free()

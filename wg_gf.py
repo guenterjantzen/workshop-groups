@@ -17,6 +17,9 @@ samples:
    {scriptname} 11
    {scriptname} 11 -s3
    {scriptname} 11 -s3 -rb
+   {scriptname} 10
+   {scriptname} 10 -s5 -c2
+   {scriptname} 10 -s5 -c2
    """
     print(sample)
 
@@ -102,6 +105,10 @@ def evaluate_some_args(args):
             self.maxsize = maxsize
             self.minsize = minsize
             self.rest = rest
+            assert person_count > 0, person_count
+            assert groupcount > 0, groupcount
+            assert maxsize > 0, maxsize
+            assert minsize > 0, minsize
         #----------------------------
         def __str__(self):
             person_count = self.person_count
@@ -121,6 +128,7 @@ def evaluate_some_args(args):
     groupcount = args.groupcount
     person_count = args.person_count
     verbose = args.verbose
+    debug = args.debug
 
     person_param_info=f'person_count={person_count}, groupcount={groupcount}, maxsize={maxsize}'
 
@@ -161,24 +169,27 @@ def evaluate_some_args(args):
         match_maxsize=None
         if groupcount:
             match_groupcount = (groupcount == match_object.groupcount)
+            if debug: print(111, f'match_groupcount={match_groupcount}, match_object.groupcount={match_object.groupcount}, groupcount={groupcount}')
         if maxsize:
             match_maxsize = (maxsize == match_object.maxsize)
+            if debug: print(222, f'match_maxsize={match_maxsize}, match_object.maxsize={match_object.maxsize}, maxsize={maxsize}')
 
         match_pair = (match_groupcount, match_maxsize)
-
         if match_pair in [(True,True),(True,None),(None, True)]:
             founds.append(match_object)
-
-    print(match_pair, len(founds))
+            if debug: print(f'333 match_pair={match_pair}, len(founds)={len(founds)}, match_object={match_object}')
+        else:
+            if debug: print(f'000 match_pair={match_pair}, len(founds)={len(founds)}, match_object={match_object}')
 
     if not founds:
-        show_lookup_and_exit(lookup, person_count, f'2No Workshop found for {person_param_info}.')
+        show_lookup_and_exit(lookup, person_count, f'No Workshop found for {person_param_info}.')
 
     if founds:
         if len(founds) > 1:
-            show_lookup_and_exit(lookup, person_count, f'4Several Workshops found for person_count {person_count}.')
+            show_lookup_and_exit(founds, person_count, f'Several Workshops found for person_count {person_count}.')
         elif len(founds) == 1:
-            found = lookup[0]
+            found = founds[0]
+            if debug:print(f'678 found = {found}')
 
     if not groupcount:
         groupcount = found.groupcount
@@ -194,15 +205,23 @@ def evaluate_some_args(args):
 #----------------------------
 def main():
     args = parseargs()
+    person_count = args.person_count
+    representation = args.representation
+    procedure = args.procedure
+    verbose = args.verbose
+    debug = args.debug
+    ortho = args.ortho
+
     maxsize, groupcount = evaluate_some_args(args)
+    if debug: print(10453, f'maxsize={maxsize}, groupcount={groupcount}')
     groupcount_is_prime = validator.is_prime(groupcount)
 
     if groupcount_is_prime:
         irr_poly = None
         basis = groupcount
         power = 1
-
-        print(f"Representation 'b' is not supported for prime groupcount {groupcount}")
+        if representation == 'b':
+            print(f"Representation 'b' is not supported for prime groupcount {groupcount}")
 
     else:
         assert groupcount in conductor, groupcount
@@ -214,16 +233,13 @@ def main():
 
     assert groupcount == basis**power, (groupcount,basis,power)
 
-    person_count = args.person_count
-    representation = args.representation
-    procedure = args.procedure
-    verbose = args.verbose
-    ortho = args.ortho
+
     if args.verbose:
         print(args)
 
-    simu = SimuGF()
-    simu.work(person_count, basis, power, irr_poly, representation=representation, procedure=procedure, ortho=ortho, verbose=verbose)
+    simu_gf = SimuGF()
+    simu_gf.work(person_count, basis, power, maxsize, groupcount, irr_poly,
+              representation=representation, procedure=procedure, ortho=ortho, verbose=verbose, debug=debug)
 
 #----------------------------
 def demo():

@@ -70,7 +70,7 @@ class MiniGF():
 #-----------------------------
 class SimuGF:
     #-----------------------------
-    def work(self, person_count, basis, power, irr_poly, representation, procedure='w', ortho=False, verbose=False):
+    def work(self, person_count, basis, power, maxsize, groupcount, irr_poly, representation, procedure='w', ortho=False, verbose=False, debug=False):
         if power > 1:
             gf = GFpn(basis, irr_poly)
         elif power == 1:
@@ -81,7 +81,11 @@ class SimuGF:
         self.person_count = person_count
         self.do_test = False
         self.ortho = ortho
+        self.maxsize = maxsize
+        self.groupcount = groupcount
+        self.debug = debug
         self.verbose = verbose
+
 
         if procedure=='op':
             self.show = self.show_optables
@@ -189,10 +193,18 @@ class SimuGF:
     #-----------------------------
     def show_workshop2(self, info, signs):
         n = self.n
-        table = self.fill_table()
+        person_count=self.person_count
+        show_modulo = self.show_modulo
+        ortho = self.ortho
+        maxsize = self.maxsize
+        groupcount = self.groupcount
+        verbose=self.verbose
+        debug = self.debug
+        print (f'\nWorkshop2 {info} for {self.person_count} persons, maxsize {maxsize}, groupcount {groupcount}')
+        board = Board(N = n, person_count = person_count, show_modulo = show_modulo,
+                ortho = ortho, signs=signs, maxsize = maxsize, groupcount = groupcount, verbose = verbose, debug = debug)
 
-        print (f'\nWorkshop2 {info} for {self.person_count} persons')
-        board = Board(N = n, person_count=self.person_count, show_modulo = self.show_modulo, ortho = self.ortho, signs=signs, verbose=self.verbose)
+        table = self.fill_table()
         for row in range(n):
             for col in range(n):
                 pair = (row,col)

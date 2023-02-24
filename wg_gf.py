@@ -59,33 +59,6 @@ conductor = {
        25 : {'basis' :5, 'power' :2, 'irr_poly' :'102'},
     }
 
-#----------------------------
-def calc_group_size_bounds0(person_count, groupcount, max_size_to_check=None):
-    n_div_gc, rest = divmod(person_count, groupcount)
-    if rest == 0:
-        maxsize = n_div_gc
-    else:
-        maxsize = n_div_gc + 1
-
-    if max_size_to_check:
-        assert max_size_to_check == maxsize, (f'max group size should be {maxsize}, not {max_size_to_check}')
-
-    minsize = maxsize -1
-    return minsize, maxsize, n_div_gc, rest
-
-#----------------------------
-def calc_group_size_bounds(person_count, groupcount, max_size_to_check=None):
-    n_div_gc, rest = divmod(person_count, groupcount)
-    if rest == 0:
-        maxsize = n_div_gc
-    else:
-        maxsize = n_div_gc + 1
-
-    if max_size_to_check:
-        assert max_size_to_check == maxsize, (f'max group size should be {maxsize}, not {max_size_to_check}')
-
-    minsize = maxsize -1
-    return minsize, maxsize, n_div_gc, rest
 
 #----------------------------
 def show_lookup_and_exit(lookup, person_count, comment):
@@ -140,7 +113,10 @@ def evaluate_some_args(args):
     groupcount_range = range(lower_groupcount, upper_groupcount+1)
     valid_groupcounts = sorted(all_valid_groupcounts.intersection(set(groupcount_range)))
     if verbose:
-        print(valid_groupcounts)
+        print(f'lower_groupcount      {lower_groupcount}')
+        print(f'upper_groupcount      {upper_groupcount}')
+        print(f'all_valid_groupcounts {all_valid_groupcounts}')
+        print(f'valid_groupcounts     {valid_groupcounts}')
 
     lookup=[]
     if len(valid_groupcounts) > 0:
@@ -160,7 +136,7 @@ def evaluate_some_args(args):
             lookup.append(match_object)
 
     if not lookup:
-        print(f'No Workshops for {person_count} participants found.')
+        print(f'7No Workshops for {person_count} participants found.')
         sys.exit(0)
 
     founds = []

@@ -25,7 +25,7 @@ class Board:
         self.signs = signs
         self.ortho=ortho
         self.sym = sym
-        self.maxsize = maxsize
+        self.maxsize = maxsize or self.N
         self.groupcount = groupcount
         if show_modulo or person_count < self.NN:
             self.init_round = False

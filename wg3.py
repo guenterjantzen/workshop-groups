@@ -21,6 +21,9 @@ def parseargs(choices):
     parser.add_argument("-o", "--ortho", help="show orthogonal squares instead of workshop",
                         action="store_true")
 
+    parser.add_argument("-i", "--init_round", help="Suppress initial round",
+                        action="store_false")
+
 
     parser.add_argument("-t", "--test", help="internal validation",
                         action="store_true")
@@ -34,11 +37,13 @@ def main():
     CHOICES=[2, 3, 4, 5, 6]
     args = parseargs(CHOICES)
     n = args.n
-    test =  args.test
+    do_test =  args.test
     mod = args.mod
     first = args.first
     sym =  args.sym
-    simu = Simu(args.n, show_modulo=args.mod, break_after_first=args.first, sym=args.sym, ortho=args.ortho, do_test=args.test)
+    init_round = args.init_round
+    ortho=args.ortho
+    simu = Simu(N=n, show_modulo=mod, break_after_first=first, sym=sym, init_round=init_round, ortho=ortho, do_test=do_test)
     simu._break=False
     simu.pruefe(row=-1, col=n-1, level=0)
     print (simu.count_full_solutions)

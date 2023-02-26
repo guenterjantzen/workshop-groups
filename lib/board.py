@@ -147,7 +147,7 @@ class Board:
     #-----------------------------
 
     def format_meeting(self, lmeeting):
-        width = 2
+        width = max([len(sign) for sign in self.signs])
         s=[f'{self.signs[i]:>{width}}' if i < self.person_count else ' ' * width for i in lmeeting ]
         sep = ' '
         joined = sep.join(s)

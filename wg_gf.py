@@ -136,7 +136,7 @@ def evaluate_some_args(args):
             lookup.append(match_object)
 
     if not lookup:
-        print(f'7No Workshops for {person_count} participants found.')
+        print(f'No Workshops for {person_count} participants found.')
         sys.exit(0)
 
     founds = []

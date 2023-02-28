@@ -1,15 +1,15 @@
 Workshop Gruppenaufteilung
 ==========================
 
-Ein Workshop findet in mehreren Runden statt und wird aufgeteilt in kleinere Gruppen. Dabei soll niemand der gleichen Person ein zweites Mal begegnen. Hier werden nur *ausgeglichene* Workshops betrachtet, bei denen die Aufteilung in jeder Runde gleich ist, und die Gruppengrößen möglichst gleich sind. Maximale und minimale Gruppengröße unterscheiden sich dann höchsten um 1. Ein Beispiel ist 14 Personen und 4 Gruppen mit Aufteilung 3,3,4,4.
+Ein Workshop findet in mehreren Runden statt und wird aufgeteilt in kleinere Gruppen. Dabei soll niemand der gleichen Person ein zweites Mal begegnen. Hier werden nur *ausgeglichene* Workshops betrachtet, bei denen die Aufteilung in jeder Runde gleich ist, und die Gruppengrößen möglichst gleich sind. Maximale und minimale Gruppengröße unterscheiden sich dann höchstens um 1. Ein Beispiel ist 14 Personen und 4 Gruppen mit Aufteilung 3,3,4,4.
 
+
+## wg3.py
 *Quadratische Workshops* sind Workshops mit n^2 Teilnehmern, die in jeder Runde n Gruppen mit jeweils n Personen bilden.
 
 Diese Voraussetzung *quadratischer Workshops* klingt zunächst wie eine heftige Einschränkung, ist es aber nicht, da sich viele andere Workshops davon ableiten lassen.
 
 Ein *vollständiger Workshop* ist ein Workshop, bei dem alle Teilnehmer in irgendeiner Runde einmal aufeinander treffen.
-
-## wg3.py
 
 Das Programm *wg3.py* ermittelt mit Backtracking eine Liste lexikalisch sortierter vollständiger quadratischer Workshops für n^2 Personen, die durch Nummern 0,1,2,...,n^2 - 1 angegeben werden. So ein vollständiger Workshop hat n+1 Runden, von denen aber nur n Runden aufgelistet werden. Die initiale Runde mit der einfach durchnummerierten Gruppenaufteilung [0,1,2 ... n-1], [n, n+1, n+2 ... 2n - 1] ... [n^2 - n, n^2 - n+1, n^2 - n+2 ... n^2 -1] wird nicht immer angegeben.
 
@@ -20,7 +20,7 @@ Man mache sich klar, dass es sich z.B. bei n=3 um die Aufteilung [0,1,2], [3,4,5
 Größeres n als 5 ist nicht sinnvoll, das Programm läuft dann zu lange.
 
 ## wg_gf.py
-Das Programm *wg_gf.py* ermittelt zu einer gegebenen Anzahl Personen einen ausgeglichenen, gleichmäßig aufgeteilten Workshop. Wenn es Workshops mit unterschiedlichen Gruppenanzahlen gibt, kann wie im folgenden Beispiel eines Workshops für 17 Personen gezeigt wird,  sukzessive eingegrenzt werden:
+Das Programm *wg_gf.py* ermittelt zu einer gegebenen Anzahl Personen einen ausgeglichenen Workshop. Wenn es Workshops mit unterschiedlichen Gruppenanzahlen gibt, kann wie im folgenden Beispiel eines Workshops für 17 Personen gezeigt wird,  sukzessive eingegrenzt werden:
 
     guenter@Hasepeter01:~/GJ/dev/github/workshop-groups$ ./wg_gf.py 17
     No Workshop found for person_count=17, groupcount=None, maxsize=None.

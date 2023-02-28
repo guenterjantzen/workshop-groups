@@ -104,7 +104,7 @@ class SimuGF:
 
         self.n = basis ** power
 
-        if representation=='b':
+        if representation=='c':
             self.show_modulo=True
         elif representation=='m':
             self.show_modulo=True
@@ -129,7 +129,7 @@ class SimuGF:
             els.append(el)
             els_index[str(el)] = i
 
-            if representation=='b':
+            if representation=='c':
                 if l:
                     sign=''.join(map(str,l))
                 else:

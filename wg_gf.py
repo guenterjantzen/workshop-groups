@@ -16,7 +16,7 @@ def show_examples():
 samples:
    {scriptname} 11
    {scriptname} 11 -s3
-   {scriptname} 11 -s3 -rb
+   {scriptname} 11 -s3 -rc
    {scriptname} 10
    {scriptname} 10 -s5 -c2
    {scriptname} 10 -s5 -c2
@@ -39,12 +39,12 @@ def parseargs():
     parser.add_argument("-s", "--maxsize", nargs='?', help="max teamsize", type=int)
     parser.add_argument("-c", "--groupcount", nargs='?', help="nr of teams ", type=int)
     parser.add_argument("-i", "--irr_poly", help="irregular polynom for construction of Galoisfield (advanced option)", required=False, type=str)
-    parser.add_argument("-r", "--representation", help="'b','m' for binaer/modulo (where supported). Default is 'n' for index", default='n', required=False)
+    parser.add_argument("-r", "--representation", help="'c','m' for coefficients/modulo (where supported). Default is 'n' for index", default='n', required=False)
     parser.add_argument("-p", "--procedure", help="procedure 'w','op','wst'  wg/optables/ws-test. Default is ws for workshop", default='ws', required=False)
     parser.add_argument("-o", "--ortho", help="orthogonal squares in procedure ws", action="store_true", default='False', required=False)
-    parser.add_argument("-v", "--verbose", help="Verbose",
+    parser.add_argument("-v", "--verbose", help="verbose",
                         action="store_true")
-    parser.add_argument("-d", "--debug", help="Debug",
+    parser.add_argument("-d", "--debug", help="debug",
                         action="store_true")
     args = parser.parse_args()
 
@@ -196,8 +196,8 @@ def main():
         irr_poly = None
         basis = groupcount
         power = 1
-        if representation == 'b':
-            print(f"Representation 'b' is not supported for prime groupcount {groupcount}")
+        if representation == 'c':
+            print(f"Representation 'c' is not supported for prime groupcount {groupcount}")
 
     else:
         assert groupcount in conductor, groupcount

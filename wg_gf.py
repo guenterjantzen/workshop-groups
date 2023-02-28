@@ -151,14 +151,14 @@ def evaluate_some_args(args):
             if debug: print(222, f'match_maxsize={match_maxsize}, match_object.maxsize={match_object.maxsize}, maxsize={maxsize}')
 
         match_pair = (match_groupcount, match_maxsize)
-        if match_pair in [(True,True),(True,None),(None, True), (None,None)]:
+        if match_pair in [(True,True),(True,None),(None, True), (None,None)]: #, (None,None)] show workshop direct if only one found
             founds.append(match_object)
             if debug: print(f'333 match_pair={match_pair}, len(founds)={len(founds)}, match_object={match_object}')
         else:
             if debug: print(f'000 match_pair={match_pair}, len(founds)={len(founds)}, match_object={match_object}')
 
-    if not founds:
-        show_lookup_and_exit(lookup, person_count, f'4444No Workshop found for {person_param_info}.')
+    #if not founds:
+    #    show_lookup_and_exit(lookup, person_count, f'No Workshop found for {person_param_info}.')
 
     if founds:
         if len(founds) > 1:
@@ -167,10 +167,10 @@ def evaluate_some_args(args):
             found = founds[0]
             if debug:print(f'678 found = {found}')
 
-    if not groupcount:
-        groupcount = found.groupcount
-    if not maxsize:
-        maxsize = found.maxsize
+            if not groupcount:
+                groupcount = found.groupcount
+            if not maxsize:
+                maxsize = found.maxsize
 
     if args.debug:
         print(4711, args)
